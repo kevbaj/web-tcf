@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+.navbar .nav-item .nav-link{
+    letter-spacing: 1px;
+}
+
+.navbar .nav-item .nav-link:after {
+    display: block;
+    content: '';
+    color: #d7d7d7;
+    border-bottom: solid 3px #ffffff;
+    transform: scaleX(0);
+    transition: transform 250ms ease-in-out;
+    transform-origin: 0% 50%
+}
+
+.navbar .nav-item .nav-link:hover:after {
+    transform: scaleX(1);
+}
+
+.bg-nav{
+    /* background-color: #0b0b0c; */
+    background-color: #105619;
+    -webkit-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+}
+
+.navbar-border{
+    font-family: 'Lobster', cursive;
+    letter-spacing: 2px;
+    padding:3px;
+    border-bottom: solid 3px #d7d7d7;
+    border-top: solid 3px #d7d7d7;
+    border-right: solid 3px #d7d7d7;
+    border-left: solid 3px #d7d7d7;    
+    font-weight: 700 !important;
+    text-shadow: 2px 4px 3px rgba(0,0,0,0.3);
+
+}
