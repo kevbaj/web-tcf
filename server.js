@@ -59,3 +59,7 @@ tcfData.initialize().then(()=>{
 }).catch(err=>{
     console.log(err);
 });
+
+app.get("/contact", (req,res)=>{
+    res.render("contact");
+});
