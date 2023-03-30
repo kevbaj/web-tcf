@@ -61,7 +61,7 @@
 }
 
 /* Style for the form input fields */
-input[type=text], textarea {
+.input_cont[type=text], textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;
@@ -73,7 +73,7 @@ input[type=text], textarea {
 }
 
 /* Style for the submit button */
-input[type=submit] {
+.input_cont[type=submit] {
   background-color: #4CAF50;
   color: white;
   padding: 12px 20px;
@@ -83,14 +83,14 @@ input[type=submit] {
 }
 
 /* Style for the container of the form */
-.container {
+.container_cont {
   border-radius: 5px;
   background-color: #f2f2f2;
   padding: 20px;
 }
 
 /* Style for the form */
-form {
+.form_cont {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
