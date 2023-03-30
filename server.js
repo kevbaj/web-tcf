@@ -56,6 +56,14 @@ app.get("/home", (req,res)=>{
     res.render("home");
 });
 
+app.get("/about", (req,res)=>{
+    res.render("about");
+});
+
+app.post("/login", (req,res)=>{
+    res.status(500).render("error404",{message: "Under Maintenanced"});
+});
+
 tcfData.initialize().then(()=>{
     app.listen(HTTP_PORT, ()=>{
         console.log("server listening on port: " + HTTP_PORT)
