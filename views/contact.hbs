@@ -1,6 +1,25 @@
     <div>
       <div style="display: grid; grid-template-columns: 1fr 2fr;">
         <div id="map">
+          <script>
+              function initMap() {
+                // Create a new map centered at the specified location
+                var map = new google.maps.Map(document.getElementById("map"), {
+                  center: {lat: 40.7128, lng: -74.0060},
+                  zoom: 15
+                });
+
+                // Add a marker at the specified location
+                var marker = new google.maps.Marker({
+                  position: {lat: 40.7128, lng: -74.0060},
+                  map: map,
+                  title: "The Catholic Foundation"
+                });
+              }
+            </script>
+            <script async defer
+              src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+            </script>
 
         </div>
         <div id="contact">
@@ -10,15 +29,20 @@
           </p>
           <p>
             Location: <br>
-            Opening Hours<br>x
+            2110 Broadway Sacramento, CA 95818<br><br>
+            Office Hours<br>
+            Monday - Friday<br>
+            8:30am - 4:30pm<br><br>
             Phone Number<br>
+            916.733.0100<br><br>
             Email Address<br>
+            tcf@gmail.com<br>
           </p>
         </div>
       </div>
     </div>
       <div class="border-div">
-      <h3>Send Us Your Inquiry</h3>
+      <h3>Send us your inquiry</h3>
       <div class="container">
         <form>
           <div>
