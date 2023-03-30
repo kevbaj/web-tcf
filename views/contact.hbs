@@ -1,58 +1,45 @@
-    <div>
-      <div style="display: grid; grid-template-columns: 1fr 2fr;">
-        <div id="map">
-          <script>
-              function initMap() {
-                // Create a new map centered at the specified location
-                var map = new google.maps.Map(document.getElementById("map"), {
-                  center: {lat: 40.7128, lng: -74.0060},
-                  zoom: 15
-                });
-
-                // Add a marker at the specified location
-                var marker = new google.maps.Marker({
-                  position: {lat: 40.7128, lng: -74.0060},
-                  map: map,
-                  title: "The Catholic Foundation"
-                });
-              }
-            </script>
-            <script async defer
-              src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
-            </script>
-
-        </div>
-        <div id="contact">
-          <h3>Contact Us</h3>
-          <p>
-            Please feel free to contact us if you have any questions or inquiries.
-          </p>
-          <p>
-            Location: <br>
-            2110 Broadway Sacramento, CA 95818<br><br>
-            Office Hours<br>
-            Monday - Friday<br>
-            8:30am - 4:30pm<br><br>
-            Phone Number<br>
-            916.733.0100<br><br>
-            Email Address<br>
-            tcf@gmail.com<br>
-          </p>
-        </div>
-      </div>
+<div>
+  <div style="display: grid; grid-template-columns: 1fr 2fr;">
+    <div id="map">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3119.9107102482894!2d-121.48786428482809!3d38.5588709796243!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ad0fcaa9fec79%3A0x10354568949f5b0d!2s2110%20Broadway%2C%20Sacramento%2C%20CA%2095818%2C%20USA!5e0!3m2!1sen!2sca!4v1680187836072!5m2!1sen!2sca"
+        width="400" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
-      <div class="border-div">
-      <h3>Send us your inquiry</h3>
-      <div class="container_cont">
-        <form class="form_cont">
-          <div>
-            <input class="input_cont" type="text" id="fname" name="fname" placeholder="Your first name...">
-            <input class="input_cont" type="text" id="lname" name="lname" placeholder="Your last name...">
-            <input class="input_cont" type="text" id="org" name="org" placeholder="Your organization name...">
-          </div>
-          <div style="grid-column: 2 / span 3;">
-            <textarea id="inquiry" name="inquiry" placeholder="Write your inquiry here..." style="height:200px"></textarea>
-          </div>
-          <div style="grid-column: 2 / span 2; text-align:right;">
-            <input type="submit" value="Submit">
-          </div>
+    <div id="contact">
+      <h3>Contact Us</h3>
+      <p>
+        Please feel free to contact us if you have any questions or inquiries.
+      </p>
+      <p>
+        Location: <br>
+        2110 Broadway Sacramento, CA 95818<br><br>
+        Office Hours<br>
+        Monday - Friday<br>
+        8:30am - 4:30pm<br><br>
+        Phone Number<br>
+        916.733.0100<br><br>
+        Email Address<br>
+        tcf@gmail.com<br>
+      </p>
+    </div>
+  </div>
+</div>
+<div class="border-div">
+  <h3>Send us your inquiry</h3>
+  <div class="container_cont">
+    <form class="form_cont">
+      <div>
+        <input class="input_cont" type="text" id="fname" name="fname" placeholder="Your first name...">
+        <input class="input_cont" type="text" id="lname" name="lname" placeholder="Your last name...">
+        <input class="input_cont" type="text" id="org" name="org" placeholder="Your organization name...">
+      </div>
+      <div style="grid-column: 2 / span 3;">
+        <textarea id="inquiry" name="inquiry" placeholder="Write your inquiry here..." style="height:200px"></textarea>
+      </div>
+      <div style="grid-column: 2 / span 2; text-align:right;">
+        <input type="submit" value="Submit">
+      </div>
+    </form>
+  </div>
+</div>
