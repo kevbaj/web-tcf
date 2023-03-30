@@ -1,0 +1,58 @@
+    <div>
+      <div style="display: grid; grid-template-columns: 1fr 2fr;">
+        <div id="map">
+          <script>
+              function initMap() {
+                // Create a new map centered at the specified location
+                var map = new google.maps.Map(document.getElementById("map"), {
+                  center: {lat: 40.7128, lng: -74.0060},
+                  zoom: 15
+                });
+
+                // Add a marker at the specified location
+                var marker = new google.maps.Marker({
+                  position: {lat: 40.7128, lng: -74.0060},
+                  map: map,
+                  title: "The Catholic Foundation"
+                });
+              }
+            </script>
+            <script async defer
+              src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+            </script>
+
+        </div>
+        <div id="contact">
+          <h3>Contact Us</h3>
+          <p>
+            Please feel free to contact us if you have any questions or inquiries.
+          </p>
+          <p>
+            Location: <br>
+            2110 Broadway Sacramento, CA 95818<br><br>
+            Office Hours<br>
+            Monday - Friday<br>
+            8:30am - 4:30pm<br><br>
+            Phone Number<br>
+            916.733.0100<br><br>
+            Email Address<br>
+            tcf@gmail.com<br>
+          </p>
+        </div>
+      </div>
+    </div>
+      <div class="border-div">
+      <h3>Send us your inquiry</h3>
+      <div class="container">
+        <form>
+          <div>
+            <input type="text" id="fname" name="fname" placeholder="Your first name...">
+            <input type="text" id="lname" name="lname" placeholder="Your last name...">
+            <input type="text" id="org" name="org" placeholder="Your organization name...">
+          </div>
+          <div style="grid-column: 2 / span 3;">
+            <textarea id="inquiry" name="inquiry" placeholder="Write your inquiry here..." style="height:200px"></textarea>
+          </div>
+          <div style="grid-column: 2 / span 2; text-align:right;">
+            <input type="submit" value="Submit">
+          </div>
