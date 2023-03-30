@@ -52,6 +52,10 @@ app.get("/", (req,res)=>{
     res.render("home");
 });
 
+app.get("/home", (req,res)=>{
+    res.render("home");
+});
+
 tcfData.initialize().then(()=>{
     app.listen(HTTP_PORT, ()=>{
         console.log("server listening on port: " + HTTP_PORT)
