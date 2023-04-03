@@ -6,7 +6,7 @@ const sqlConfig = {
     database: 'db_TCF',
     options: {
         trustServerCertificate: true 
-      }
+    }
 };
 
 const pool = new sql.ConnectionPool(sqlConfig)
