@@ -68,8 +68,9 @@ app.get("/contact", (req,res)=>{
     res.render("contact");
 });
 
-
-
+app.get("/admin", (req,res)=>{
+    res.render("createuser");
+});
 
 tcfData.initialize().then(()=>{
     app.listen(HTTP_PORT, ()=>{
