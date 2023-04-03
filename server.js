@@ -64,14 +64,17 @@ app.post("/login", (req,res)=>{
     res.status(500).render("error404",{message: "Under Maintenanced"});
 });
 
+app.get("/contact", (req,res)=>{
+    res.render("contact");
+});
+
+
+
+
 tcfData.initialize().then(()=>{
     app.listen(HTTP_PORT, ()=>{
         console.log("server listening on port: " + HTTP_PORT)
     });
 }).catch(err=>{
     console.log(err);
-});
-
-app.get("/contact", (req,res)=>{
-    res.render("contact");
 });
