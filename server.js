@@ -65,12 +65,31 @@ app.post("/login", (req,res)=>{
 });
 
 app.get("/contact", (req,res)=>{
-    res.render("contact");
+    const query1 = "Select *,DATENAME(dw,day_num) as 'DayName',case when Info.OfficeHour.status=0 then 'Closed' else cast(FORMAT(cast(open_hr as datetime), N'hh:mm tt') as nvarchar(20)) + ' - ' + cast(FORMAT(cast(close_hr as datetime), N'hh:mm tt') as nvarchar(20)) end as 'Hrs' from Info.OfficeHour order by day_num asc"
+    const query2 = "SELECT TOP 1 * FROM Info.Location"
+    let rows1, rows2
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query1),
+            pool.request().query(query2)
+        ])
+    }).then(results => {
+        rows1 = results[0].recordset
+        rows2 = results[1].recordset
+        res.render('contact', { rows1, rows2 })
+    }).catch(err => {
+        console.error(err)
+        res.render('error')
+    })
 });
 
+<<<<<<< Updated upstream
 app.get("/admin", (req,res)=>{
     res.render("createuser");
 });
+=======
+
+>>>>>>> Stashed changes
 
 tcfData.initialize().then(()=>{
     app.listen(HTTP_PORT, ()=>{

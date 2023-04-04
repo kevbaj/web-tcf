@@ -12,15 +12,26 @@
         Please feel free to contact us if you have any questions or inquiries.
       </p>
       <p>
-        Location: <br>
-        2110 Broadway Sacramento, CA 95818<br><br>
-        Office Hours<br>
-        Monday - Friday<br>
-        8:30am - 4:30pm<br><br>
-        Phone Number<br>
-        916.733.0100<br><br>
-        Email Address<br>
-        tcf@gmail.com<br>
+        {{#each rows2}}
+        <b>Location:</b> <br>
+        {{loc_addr}} {{loc_city}}, {{loc_prov}} {{loc_postal}}
+      <br>
+      <b>Phone Number</b><br>
+      {{loc_phone}}<br><br>
+      <b>Email Address</b><br>
+      {{loc_emailaddr}}<br><br>
+      {{/each}}
+      <b>Office Hours</b>
+      <table class="table table-hover">
+        <tbody>
+          {{#each rows1}}
+          <tr>
+            <td>{{DayName}}</td>
+            <td>{{Hrs}}</a></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
       </p>
     </div>
   </div>
