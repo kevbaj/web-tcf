@@ -83,13 +83,6 @@ app.get("/contact", (req,res)=>{
     })
 });
 
-<<<<<<< Updated upstream
-app.get("/admin", (req,res)=>{
-    res.render("createuser");
-});
-=======
-
->>>>>>> Stashed changes
 
 tcfData.initialize().then(()=>{
     app.listen(HTTP_PORT, ()=>{
