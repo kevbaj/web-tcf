@@ -41,7 +41,6 @@ module.exports.SUBMIT_INQUIRY=function(inqData){
     });
 }
 
-
 module.exports.searchLogin=function(loginData){
     return new Promise((resolve,reject)=>{
         const { txtuname, txtpword } = loginData;
@@ -59,4 +58,23 @@ module.exports.searchLogin=function(loginData){
             reject("Unable to Login");
         })
     })
+}
+
+module.exports.SAVE_ADMINACCOUNT=function(accData){
+    return new Promise((resolve,reject)=>{
+        const { fname, lname, jpos, uname, pword } = accData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('fname', sql.NVarChar, fname)
+            .input('lname', sql.NVarChar, lname)
+            .input('jpos', sql.NVarChar, jpos)
+            .input('uname', sql.NVarChar, uname)
+            .input('pword', sql.NVarChar, pword)
+            .query('INSERT INTO Admin.Accounts(fname,lname,jpos,uname,pword,is_active) VALUES (@fname, @lname,@jpos,@uname, @pword, 1)')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Add Account");
+        })
+    });
 }

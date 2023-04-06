@@ -1,0 +1,49 @@
+<h1>Create Admin Account</h1>
+{{#if message}}
+<p style="color: red">{{message}}</p>
+{{/if}}
+<form method="post" action="/saveadmin">
+	<div class="mb-3">
+		<label for="fname" class="form-label">First Name</label>
+		<input type="text" class="form-control" name="fname" id="fname" aria-describedby="emailHelp">
+	</div>
+	<div class="mb-3">
+		<label for="lname" class="form-label">Last Name</label>
+		<input type="text" class="form-control" name="lname" id="lname" aria-describedby="emailHelp">
+	</div>
+	<div class="mb-3">
+		<label for="jpos" class="form-label">Job Position</label>
+		<input type="text" class="form-control" name="jpos" id="jpos" aria-describedby="emailHelp">
+	</div>
+	<div class="mb-3">
+		<label for="uname" class="form-label">Username</label>
+		<input type="text" class="form-control" name="uname" id="uname" aria-describedby="emailHelp">
+	</div>
+	<div class="mb-3">
+		<label for="pword" class="form-label">Password</label>
+		<input type="password" class="form-control" name="pword" id="pword" aria-describedby="emailHelp">
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<br>
+<table class="table table-sm table-bordered">
+	<thead class="thead-dark text-center">
+		<tr>
+			<th scope="col">First Name</th>
+			<th scope="col">Last Name</th>
+			<th scope="col">Job Position</th>
+			<th scope="col">Status</th>
+		</tr>
+	</thead>
+	<tbody class="text-center">
+		{{#each rows1}}
+		<tr>
+			<td>{{fname}}</td>
+			<td>{{lname}}</td>
+			<td>{{jpos}}</td>
+			<td>{{Stat}}</td>
+		</tr>
+		{{/each}}
+	</tbody>
+</table>

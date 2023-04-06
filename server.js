@@ -148,8 +148,21 @@ app.get("/contact", (req,res)=>{
     })
 });
 
-app.get("/createuser", (req,res)=>{
-    res.render("createuser");
+app.get("/createadmin", authMiddleware, (req,res)=>{
+    const query="Select *, case when is_active=1 then 'Active' else 'Deactive' end as Stat from Admin.Accounts";
+    let rows1;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        rows1 = results[0].recordset;
+        res.render("createadmin", { layout: 'admin',rows1 });
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Users Not Found"});
+    })
+    
 });
 
 app.get("/dashboard", authMiddleware,(req,res)=>{
@@ -182,6 +195,16 @@ app.post("/login", (req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "Unable to Login"});
+    });
+});
+
+
+app.post("/saveadmin",(req,res)=>{
+    tcfData.SAVE_ADMINACCOUNT(req.body).then(()=>{
+        res.redirect("/createadmin");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Admin Account Not Saved"});
     });
 });
 
