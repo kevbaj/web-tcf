@@ -78,3 +78,24 @@ module.exports.SAVE_ADMINACCOUNT=function(accData){
         })
     });
 }
+
+module.exports.UPDATE_CONTACT=function(contData){
+    return new Promise((resolve,reject)=>{
+        const { addr, city, prov, country, postal, phone, emailadd } = contData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('addr', sql.NVarChar, addr)
+            .input('city', sql.NVarChar, city)
+            .input('prov', sql.NVarChar, prov)
+            .input('country', sql.NVarChar, country)
+            .input('postal', sql.NVarChar, postal)
+            .input('phone', sql.NVarChar, phone)
+            .input('emailadd', sql.NVarChar, emailadd)
+            .query('UPDATE Info.Location set loc_addr=@addr, loc_city=@city, loc_prov=@prov, loc_country=@country, loc_postal=@postal, loc_phone=@phone, loc_emailaddr=@emailadd where ID=1')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Update Contact Info");
+        })
+    });
+}

@@ -214,13 +214,21 @@ app.post("/login", (req,res)=>{
     });
 });
 
-
 app.post("/saveadmin",(req,res)=>{
     tcfData.SAVE_ADMINACCOUNT(req.body).then(()=>{
         res.redirect("/createadmin");
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "Admin Account Not Saved"});
+    });
+});
+
+app.post("/updatecontact",(req,res)=>{
+    tcfData.UPDATE_CONTACT(req.body).then(()=>{
+        res.redirect("/contactinfo");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Contact Info Not Saved"});
     });
 });
 
