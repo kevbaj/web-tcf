@@ -45,7 +45,7 @@ module.exports.SUBMIT_INQUIRY=function(inqData){
 module.exports.searchLogin=function(loginData){
     return new Promise((resolve,reject)=>{
         const { txtuname, txtpword } = loginData;
-        const logquery="SELECT * FROM Admin.Accounts WHERE uname = @uname AND pword = @pword and is_active=1"
+        const logquery="SELECT TOP 1 * FROM Admin.Accounts WHERE uname = @uname and pword= @pword and is_active=1"
         sql.connect(sqlConfig).then(pool=>{
             return pool.request()
             .input('uname', sql.NVarChar, txtuname)
@@ -53,7 +53,6 @@ module.exports.searchLogin=function(loginData){
             .query(logquery)
         }).then(result=>{
             let loginResult = result.recordset;
-            console.error(loginResult);
             resolve(loginResult);
         }).catch(err => {
             console.error(err);

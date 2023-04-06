@@ -1,14 +1,18 @@
 const HTTP_PORT = process.env.PORT || 8080;
 const favicon = require('serve-favicon');
 const express = require("express");
+const session = require('express-session');
+const MSSQLSessionStore = require('connect-mssql')(session);
 const app = express();
-const bodyParser = require('body-parser')
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const tcfData = require("./modules/tcfData");
 const path = require("path");
+
 const exphbs = require("express-handlebars");
 const { rejects } = require('assert');
-
 app.engine(".hbs", exphbs.engine({
     extname: ".hbs",
     helpers: {
@@ -37,18 +41,40 @@ app.engine(".hbs", exphbs.engine({
         }
     }
 }));
-
 app.set("view engine", ".hbs");
 
 app.use(express.static("public"));
 app.use(express.urlencoded({extended:true}));
 app.use(favicon(__dirname + '/favicon.ico'));
 
-app.use(bodyParser.urlencoded({ extended: false }))
+const sessionStore = new MSSQLSessionStore({
+    database: 'db_TCF',
+    user: 'admin',
+    password: 'sapassw0rd',
+    server: 'dbtcf.cceiephcgn5r.us-east-1.rds.amazonaws.com',
+    table: 'sessions'
+});
+  
+app.use(session({
+    secret: 'tcfgroup5',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+    store: sessionStore
+}));
+
+const authMiddleware = (req, res, next) => {
+    if (req.session.isAuthenticated) {
+      next();
+    } else {
+      res.redirect('/home');
+    }
+};
 
 app.use(function(req,res,next){
     let route = req.path.substring(1);
     app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, "")); 
+    
     next();
 });
 
@@ -126,7 +152,14 @@ app.get("/createuser", (req,res)=>{
     res.render("createuser");
 });
 
+app.get("/dashboard", authMiddleware,(req,res)=>{
+    res.render('dashboard', { layout: 'admin' });
+});
 
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/home');
+  });
 //-------------POST TRANSACTION-------------------------------------
 app.post('/contact', (req, res) => {
     tcfData.SUBMIT_INQUIRY(req.body).then(()=>{
@@ -138,11 +171,11 @@ app.post('/contact', (req, res) => {
 });
 
 app.post("/login", (req,res)=>{
-    const query = "SELECT TOP 1 * FROM Info.Location";
-    let contac;
     tcfData.searchLogin(req.body).then(loginData=>{
         if (loginData.length > 0) {
-            res.send('Login successful');
+            req.session.isAuthenticated = true;
+            req.session.user = loginData;
+            res.redirect("dashboard");
         } else {
             res.render('home', { message: 'Invalid username or password' });
         }
