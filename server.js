@@ -138,7 +138,18 @@ app.post('/contact', (req, res) => {
 });
 
 app.post("/login", (req,res)=>{
-    res.status(500).render("error404",{message: "Under Maintenanced"});
+    const query = "SELECT TOP 1 * FROM Info.Location";
+    let contac;
+    tcfData.searchLogin(req.body).then(loginData=>{
+        if (loginData.length > 0) {
+            res.send('Login successful');
+        } else {
+            res.render('home', { message: 'Invalid username or password' });
+        }
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Unable to Login"});
+    });
 });
 
 //----------INITIALIZE-----------------------------------------

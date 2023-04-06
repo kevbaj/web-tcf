@@ -5,15 +5,18 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Login</h3>
+                        {{#if message}}
+                            <p style="color: red">{{message}}</p>
+                        {{/if}}
                     </div>
                     <div class="panel-body">
                         <form method="post" action="/login">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="username" placeholder="Enter username">
+                                <input type="text" class="form-control" id="txtuname" name="txtuname" placeholder="Enter username" required>
                             </div>
                             <br>
                             <div class="form-group">
-                                <input type="password" class="form-control" id="password" placeholder="Enter password">
+                                <input type="password" class="form-control" id="txtpword" name="txtpword" placeholder="Enter password" required>
                             </div>
                             <br>
                             <button type="submit" class="btn btn-primary" >Submit</button>

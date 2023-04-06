@@ -40,3 +40,24 @@ module.exports.SUBMIT_INQUIRY=function(inqData){
         })
     });
 }
+
+
+module.exports.searchLogin=function(loginData){
+    return new Promise((resolve,reject)=>{
+        const { txtuname, txtpword } = loginData;
+        const logquery="SELECT * FROM Admin.Accounts WHERE uname = @uname AND pword = @pword and is_active=1"
+        sql.connect(sqlConfig).then(pool=>{
+            return pool.request()
+            .input('uname', sql.NVarChar, txtuname)
+            .input('pword', sql.NVarChar, txtpword)
+            .query(logquery)
+        }).then(result=>{
+            let loginResult = result.recordset;
+            console.error(loginResult);
+            resolve(loginResult);
+        }).catch(err => {
+            console.error(err);
+            reject("Unable to Login");
+        })
+    })
+}
