@@ -39,14 +39,14 @@
 <div class="border-div">
   <h3>Send us your inquiry</h3>
   <div class="container_cont">
-    <form class="form_cont">
+    <form method="post" class="form_cont">
       <div>
-        <input class="input_cont" type="text" id="fname" name="fname" placeholder="Your full name...">
-        <input class="input_cont" type="text" id="email" name="email" placeholder="Your email address...">
+        <input class="input_cont" type="text" id="fname" name="fname" placeholder="Your full name..." required>
+        <input class="input_cont" type="text" id="email" name="email" placeholder="Your email address..." required>
         <input class="input_cont" type="text" id="org" name="org" placeholder="Your organization name...">
       </div>
       <div style="grid-column: 2 / span 3;">
-        <textarea id="inquiry" name="inquiry" placeholder="Write your inquiry here..." style="height:200px"></textarea>
+        <textarea id="inquiry" name="inquiry" placeholder="Write your inquiry here..." style="height:200px" required></textarea>
       </div>
       <div style="grid-column: 2 / span 2; text-align:right;">
         <input type="submit" value="Submit">

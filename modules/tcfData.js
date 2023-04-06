@@ -1,4 +1,4 @@
-const  sql = require("mssql");
+const sql = require("mssql");
 const sqlConfig = {
     user: 'admin',
     password: 'sapassw0rd',
@@ -19,6 +19,24 @@ module.exports.initialize= function(){
             } else {
                 resolve(pool)
             }
+        })
+    });
+}
+
+module.exports.SUBMIT_INQUIRY=function(inqData){
+    return new Promise((resolve,reject)=>{
+        const { fname, email, org, inquiry } = inqData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('fname', sql.NVarChar, fname)
+            .input('email', sql.NVarChar, email)
+            .input('org', sql.NVarChar, org)
+            .input('inquiry', sql.NVarChar, inquiry)
+            .query('INSERT INTO Info.Inquiry(inq_datetime, inq_fullName,inq_email,inq_orgName,inq_text) VALUES (GETDATE(),@fname, @email,@org,@inquiry)')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Submit Inquiry");
         })
     });
 }

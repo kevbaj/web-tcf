@@ -50,18 +50,20 @@
                 <div class="col-md-6 col-lg-4">
                     <h5>Useful Links</h5>
                     <ul class="list-unstyled text-small">
-                    <li><a class="link-secondary" href="#">Home</a></li>
-                    <li><a class="link-secondary" href="#">About Us</a></li>
-                    <li><a class="link-secondary" href="#">Contact Us</a></li>
+                    <li><a class="link-secondary" href="/home">Home</a></li>
+                    <li><a class="link-secondary" href="/about">About Us</a></li>
+                    <li><a class="link-secondary" href="/contact">Contact Us</a></li>
                     <li><a class="link-secondary" href="#">Privacy Policy</a></li>
                     </ul>
                 </div>
                 <div class="col-md-12 col-lg-4">
                     <h5>Contact Us</h5>
                     <ul class="list-unstyled text-small">
-                    <li><i class="fa fa-map-pin"></i> 2110 Broadway Sacramento, CA 95818</li>
-                    <li><i class="fa fa-envelope"></i> tcf@gmail.com</li>
-                    <li><i class="fa fa-phone"></i> 916.733.0100</li>
+                    {{#each contac}}
+                    <li><i class="fa fa-map-pin"></i> {{loc_addr}} {{loc_city}}, {{loc_prov}} {{loc_postal}}</li>
+                    <li><i class="fa fa-envelope"></i> {{loc_phone}}</li>
+                    <li><i class="fa fa-phone"></i> {{loc_emailaddr}}</li>
+                    {{/each}}
                     </ul>
                 </div>
                 </div>
