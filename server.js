@@ -170,7 +170,19 @@ app.get("/dashboard", authMiddleware,(req,res)=>{
 });
 
 app.get("/contactinfo", authMiddleware,(req,res)=>{
-    res.render('contactinfo', { layout: 'admin' });
+    const query = "SELECT TOP 1 * FROM Info.Location"
+    let contac
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        contac= results[0].recordset
+        res.render('contactinfo', { layout: 'admin', contac })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Contact Not Found"});
+    })
 });
 
 app.get('/logout', (req, res) => {
