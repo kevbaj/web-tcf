@@ -169,6 +169,10 @@ app.get("/dashboard", authMiddleware,(req,res)=>{
     res.render('dashboard', { layout: 'admin' });
 });
 
+app.get("/contactinfo", authMiddleware,(req,res)=>{
+    res.render('contactinfo', { layout: 'admin' });
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
