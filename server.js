@@ -2,6 +2,7 @@ const HTTP_PORT = process.env.PORT || 8080;
 const favicon = require('serve-favicon');
 const express = require("express");
 const session = require('express-session');
+const fetch = require('node-fetch');
 const MSSQLSessionStore = require('connect-mssql')(session);
 const app = express();
 
@@ -170,20 +171,68 @@ app.get("/dashboard", authMiddleware,(req,res)=>{
 });
 
 app.get("/contactinfo", authMiddleware,(req,res)=>{
-    const query = "SELECT TOP 1 * FROM Info.Location"
-    let contac
-    tcfData.initialize().then(pool=>{
-        return Promise.all([
-            pool.request().query(query)
-        ])
-    }).then(results => {
-        contac= results[0].recordset
-        res.render('contactinfo', { layout: 'admin', contac })
-    }).catch(err => {
-        console.error(err)
-        res.status(500).render("error404",{message: "Contact Not Found"});
+    const url = 'http://api.geonames.org/countryInfoJSON?username=kevinbaj10';
+    const query = "SELECT TOP 1 * FROM Info.Location";
+    let contac={};
+
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        const countries = data.geonames.map(country => {
+            return { name: country.countryName, code: country.countryCode };
+        });
+
+        // tcfData.initialize().then(pool=>{
+        //     return Promise.all([
+        //         pool.request().query(query)
+        //     ])
+        // }).then(results => {
+        //     contac= results[0].recordset;
+             res.render('contactinfo', { layout: 'admin', countries });
+        // }).catch(err => {
+        //     console.error(err)
+        //     res.status(500).render("error404",{message: "Contact Not Found"});
+        // });
     })
+    .catch(error => {
+      console.error(error);
+      res.status(500).render("error404",{message: "Contact Not Found"});
+    });
+    
 });
+
+app.get('/provinces/:countryCode', (req, res) => {
+    const countryCode = req.params.countryCode;
+    const url = 'http://api.geonames.org/searchJSON?username=kevinbaj10&country='+ countryCode + '&featureCode=ADM1';
+  
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const provinces = data.geonames.map(province => province.adminName1);
+        res.send(provinces);
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).send('An error occurred');
+      });
+  });
+  
+  // Populate the cities dropdown box based on the selected province/state
+  app.get('/cities/:province', (req, res) => {
+    const province = req.params.province;
+    const url = 'http://api.geonames.org/searchJSON?q='+ province +'&featureCode=PPL&username=kevinbaj10';
+    
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const cities = data.geonames.map(city => city.name);
+        res.send(cities);
+      })
+      .catch(error => {
+        console.error(error);
+        res.status(500).send('An error occurred');
+      });
+  });
 
 app.get('/logout', (req, res) => {
     req.session.destroy();

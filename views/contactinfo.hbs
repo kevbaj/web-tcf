@@ -1,6 +1,6 @@
 <h1>Edit Contact Us Info</h1>
 <form method="post" action="/updatecontact">
-{{#each contac}}
+
 <div class="row">
 	<div class="mb-3">
 		<label for="addr" class="form-label">Address</label>
@@ -11,19 +11,26 @@
 	<div class="col">
 		<div class="mb-3">
 			<label for="country" class="form-label">Country</label>
-			<input type="text" class="form-control" name="country" id="country" value={{loc_country}}>
+			<select class="form-select" id="country" name="country">
+				{{#each countries}}
+					<option value="{{code}}">{{name}}</option>
+				{{/each}}
+			</select>
+			{{!-- <input type="text" class="form-control" name="country" id="country" value={{loc_country}}> --}}
 		</div>
 	</div>
 	<div class="col">
 		<div class="mb-3">
 			<label for="prov" class="form-label">Province</label>
-			<input type="text" class="form-control" name="prov" id="prov" value={{loc_prov}}>
+			<select class="form-select" id="province" name="province" ></select>
+			{{!-- <input type="text" class="form-control" name="prov" id="prov" value={{loc_prov}}> --}}
 		</div>
 	</div>
 	<div class="col">
 		<div class="mb-3">
 			<label for="city" class="form-label">City</label>
-			<input type="text" class="form-control" name="city" id="city" value={{loc_city}}>
+			<select class="form-select" id="city" name="city"></select>
+			{{!-- <input type="text" class="form-control" name="city" id="city" value={{loc_city}}> --}}
 		</div>
 	</div>
 </div>
@@ -37,7 +44,7 @@
 	<div class="col">
 		<div class="mb-3">
 			<label for="phone" class="form-label">Phone Number</label>
-			<input type="text" class="form-control" name="phone" id="phone" value={{loc_phone}}>
+			<input type="text" class="form-control" name="phone" id="phone" value="{{loc_phone}}">
 		</div>
 	</div>
 	<div class="col">
@@ -47,8 +54,52 @@
 		</div>
 	</div>
 </div>
-{{/each}}
+
 <div class="mb-3">
     <button type="submit" class="btn btn-primary">Update</button>
 </div>
 </form>
+
+<script>
+  const countrySelect = document.getElementById('country');
+  const provinceSelect = document.getElementById('province');
+  const citySelect = document.getElementById('city');
+
+  countrySelect.addEventListener('change', () => {
+    const countryCode = countrySelect.value;
+    fetch(`/provinces/${countryCode}`)
+      .then(response => response.json())
+      .then(provinces => {
+        provinceSelect.innerHTML = '';
+        provinces.forEach(province => {
+          const option = document.createElement('option');
+          option.value = province;
+          option.text = province;
+          provinceSelect.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        alert('An error occurred');
+      });
+  });
+
+  provinceSelect.addEventListener('change', () => {
+    const province = provinceSelect.value;
+    fetch(`/cities/${province}`)
+      .then(response => response.json())
+      .then(cities => {
+        citySelect.innerHTML = '';
+        cities.forEach(city => {
+          const option = document.createElement('option');
+          option.value = city;
+          option.text = city;
+          citySelect.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        alert('An error occurred');
+      });
+  });
+</script>
