@@ -171,73 +171,68 @@ app.get("/dashboard", authMiddleware,(req,res)=>{
 });
 
 app.get("/contactinfo", authMiddleware,(req,res)=>{
-    const url = 'http://api.geonames.org/countryInfoJSON?username=kevinbaj10';
     const query = "SELECT TOP 1 * FROM Info.Location";
-    let contac={};
+    const query2 = "Select * from SysInfo.Countries order by CNT_Long";
+    let contac, cnt_res;
 
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        const countries = data.geonames.map(country => {
-            return { name: country.countryName, code: country.countryCode };
-        });
-
-        // tcfData.initialize().then(pool=>{
-        //     return Promise.all([
-        //         pool.request().query(query)
-        //     ])
-        // }).then(results => {
-        //     contac= results[0].recordset;
-             res.render('contactinfo', { layout: 'admin', countries });
-        // }).catch(err => {
-        //     console.error(err)
-        //     res.status(500).render("error404",{message: "Contact Not Found"});
-        // });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).render("error404",{message: "Contact Not Found"});
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query),
+            pool.request().query(query2)
+        ])
+    }).then(results => {
+        contac= results[0].recordset;
+        cnt_res=results[1].recordset;
+        res.render('contactinfo', { layout: 'admin', contac, cnt_res });
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Contact Not Found"});
     });
     
 });
 
 app.get('/provinces/:countryCode', (req, res) => {
     const countryCode = req.params.countryCode;
-    const url = 'http://api.geonames.org/searchJSON?username=kevinbaj10&country='+ countryCode + '&featureCode=ADM1';
-  
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const provinces = data.geonames.map(province => province.adminName1);
-        res.send(provinces);
-      })
-      .catch(error => {
-        console.error(error);
-        res.status(500).send('An error occurred');
-      });
-  });
+    const query = "Select * from SysInfo.Provinces where CNT_ID="+ countryCode +" order by PROV_TEXT";
+    let prov_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        prov_res= results[0].recordset;
+        res.json(prov_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Province Not Found"});
+    });
+});
   
   // Populate the cities dropdown box based on the selected province/state
   app.get('/cities/:province', (req, res) => {
-    const province = req.params.province;
-    const url = 'http://api.geonames.org/searchJSON?q='+ province +'&featureCode=PPL&username=kevinbaj10';
+    const provinceCode = req.params.province;
+    const query = "Select * from SysInfo.Cities where PROV_ID="+ provinceCode +" order by CT_NAME";
+    let city_res;
     
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        const cities = data.geonames.map(city => city.name);
-        res.send(cities);
-      })
-      .catch(error => {
-        console.error(error);
-        res.status(500).send('An error occurred');
-      });
-  });
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        city_res= results[0].recordset;
+        res.json(city_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "City Not Found"});
+    });
+});
 
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
-  });
+});
+
+
 //-------------POST TRANSACTION-------------------------------------
 app.post('/contact', (req, res) => {
     tcfData.SUBMIT_INQUIRY(req.body).then(()=>{

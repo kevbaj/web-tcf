@@ -1,39 +1,43 @@
 <h1>Edit Contact Us Info</h1>
 <form method="post" action="/updatecontact">
-
+{{#each contac}}
 <div class="row">
 	<div class="mb-3">
 		<label for="addr" class="form-label">Address</label>
 		<input type="text" class="form-control" name="addr" id="addr" value="{{loc_addr}}">
 	</div>
 </div>
+{{/each}}
 <div class="row">
 	<div class="col">
 		<div class="mb-3">
 			<label for="country" class="form-label">Country</label>
-			<select class="form-select" id="country" name="country">
-				{{#each countries}}
-					<option value="{{code}}">{{name}}</option>
+			<select class="form-select" id="country" name="country" aria-selected="{{loc_country}}" >
+				<option selected="true" disabled="disabled">Choose Country</option> 
+				{{#each cnt_res}}
+					<option value="{{CNT_ID}}">{{CNT_Long}}</option>
 				{{/each}}
 			</select>
-			{{!-- <input type="text" class="form-control" name="country" id="country" value={{loc_country}}> --}}
 		</div>
 	</div>
 	<div class="col">
 		<div class="mb-3">
 			<label for="prov" class="form-label">Province</label>
-			<select class="form-select" id="province" name="province" ></select>
-			{{!-- <input type="text" class="form-control" name="prov" id="prov" value={{loc_prov}}> --}}
+			<select class="form-select" id="province" name="province" >
+				<option selected="true" disabled="disabled">Choose Province</option> 
+			</select>
 		</div>
 	</div>
 	<div class="col">
 		<div class="mb-3">
 			<label for="city" class="form-label">City</label>
-			<select class="form-select" id="city" name="city"></select>
-			{{!-- <input type="text" class="form-control" name="city" id="city" value={{loc_city}}> --}}
+			<select class="form-select" id="city" name="city">
+				<option selected="true" disabled="disabled">Choose City</option> 
+			</select>
 		</div>
 	</div>
 </div>
+{{#each contac}}
 <div class="row">
 	<div class="col">
 		<div class="mb-3">
@@ -54,7 +58,7 @@
 		</div>
 	</div>
 </div>
-
+{{/each}}
 <div class="mb-3">
     <button type="submit" class="btn btn-primary">Update</button>
 </div>
@@ -68,18 +72,24 @@
   countrySelect.addEventListener('change', () => {
     const countryCode = countrySelect.value;
     fetch(`/provinces/${countryCode}`)
-      .then(response => response.json())
-      .then(provinces => {
+		.then(response => response.json())
+      	.then(prov_res => {
         provinceSelect.innerHTML = '';
-        provinces.forEach(province => {
-          const option = document.createElement('option');
-          option.value = province;
-          option.text = province;
-          provinceSelect.appendChild(option);
+		console.log(prov_res);
+		const option = document.createElement('option');
+		option.selected=true;
+		option.disabled="disabled";
+		option.text="Choose Province";
+		provinceSelect.appendChild(option);
+        prov_res.forEach(prov_res => {
+			const option = document.createElement('option');
+			option.value = prov_res.PROV_ID;
+			option.text = prov_res.PROV_TEXT;
+			provinceSelect.appendChild(option);
         });
       })
       .catch(error => {
-        console.error(error);
+        console.log(error);
         alert('An error occurred');
       });
   });
@@ -88,12 +98,17 @@
     const province = provinceSelect.value;
     fetch(`/cities/${province}`)
       .then(response => response.json())
-      .then(cities => {
+      .then(city_res => {
         citySelect.innerHTML = '';
-        cities.forEach(city => {
+		const option = document.createElement('option');
+		option.selected=true;
+		option.disabled="disabled";
+		option.text="Choose City";
+		citySelect.appendChild(option);
+        city_res.forEach(city_res => {
           const option = document.createElement('option');
-          option.value = city;
-          option.text = city;
+          option.value = city_res.CT_ID;
+          option.text = city_res.CT_NAME;
           citySelect.appendChild(option);
         });
       })
@@ -102,4 +117,5 @@
         alert('An error occurred');
       });
   });
+  
 </script>
