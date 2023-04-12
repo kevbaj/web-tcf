@@ -170,9 +170,9 @@ app.get("/dashboard", authMiddleware,(req,res)=>{
     res.render('dashboard', { layout: 'admin' });
 });
 
-app.get("/contactinfo", authMiddleware,(req,res)=>{
+app.get("/location", authMiddleware,(req,res)=>{
     const query = "SELECT TOP 1 * FROM Info.Location";
-    const query2 = "Select * from SysInfo.Countries order by CNT_Long";
+    const query2 = "Select a.*, case when b.loc_country is null then 'false' else 'true' end as is_selected from SysInfo.Countries a left join Info.Location b on a.CNT_ID=b.loc_country order by a.CNT_Long";
     let contac, cnt_res;
 
     tcfData.initialize().then(pool=>{
@@ -183,17 +183,17 @@ app.get("/contactinfo", authMiddleware,(req,res)=>{
     }).then(results => {
         contac= results[0].recordset;
         cnt_res=results[1].recordset;
-        res.render('contactinfo', { layout: 'admin', contac, cnt_res });
+        res.render('location', { layout: 'admin', contac, cnt_res });
     }).catch(err => {
         console.error(err)
-        res.status(500).render("error404",{message: "Contact Not Found"});
+        res.status(500).render("error404",{message: "Location Not Found"});
     });
     
 });
 
 app.get('/provinces/:countryCode', (req, res) => {
     const countryCode = req.params.countryCode;
-    const query = "Select * from SysInfo.Provinces where CNT_ID="+ countryCode +" order by PROV_TEXT";
+    const query = "Select a.*, case when b.loc_prov is null then 'false' else 'true' end is_selected from SysInfo.Provinces a left join Info.Location b on b.loc_prov=a.PROV_ID where a.CNT_ID="+ countryCode +" order by a.PROV_TEXT";
     let prov_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
@@ -208,10 +208,9 @@ app.get('/provinces/:countryCode', (req, res) => {
     });
 });
   
-  // Populate the cities dropdown box based on the selected province/state
-  app.get('/cities/:province', (req, res) => {
+app.get('/cities/:province', (req, res) => {
     const provinceCode = req.params.province;
-    const query = "Select * from SysInfo.Cities where PROV_ID="+ provinceCode +" order by CT_NAME";
+    const query = "Select a.*, case when b.loc_city is null then 'false' else 'true' end as is_selected from SysInfo.Cities a left join Info.Location b on b.loc_city=a.CT_ID where a.PROV_ID="+ provinceCode +" order by a.CT_NAME";
     let city_res;
     
     tcfData.initialize().then(pool=>{
@@ -267,12 +266,12 @@ app.post("/saveadmin",(req,res)=>{
     });
 });
 
-app.post("/updatecontact",(req,res)=>{
-    tcfData.UPDATE_CONTACT(req.body).then(()=>{
-        res.redirect("/contactinfo");
+app.post("/updatelocation",(req,res)=>{
+    tcfData.UPDATE_LOCATION(req.body).then(()=>{
+        res.redirect("/location");
     }).catch(err=>{
         console.error(err)
-        res.status(500).render("error404",{message: "Contact Info Not Saved"});
+        res.status(500).render("error404",{message: "Location Info Not Saved"});
     });
 });
 

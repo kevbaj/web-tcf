@@ -79,7 +79,7 @@ module.exports.SAVE_ADMINACCOUNT=function(accData){
     });
 }
 
-module.exports.UPDATE_CONTACT=function(contData){
+module.exports.UPDATE_LOCATION=function(contData){
     return new Promise((resolve,reject)=>{
         const { addr, city, province, country, postal, phone, emailadd } = contData;
         sql.connect(sqlConfig).then(pool => {
@@ -95,7 +95,7 @@ module.exports.UPDATE_CONTACT=function(contData){
         }).then(() => {
             resolve();
         }).catch(err => {
-            reject("Unable to Update Contact Info");
+            reject("Unable to Update Location Info");
         })
     });
 }
