@@ -100,3 +100,20 @@ module.exports.UPDATE_LOCATION=function(contData){
     });
 }
 
+module.exports.UPDATE_OFFICEHR=function(offData, ohrId){
+    return new Promise((resolve,reject)=>{
+        const { stat, ophr, clhr } = offData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('stat', sql.NVarChar, stat)
+            .input('ophr', sql.NVarChar, ophr)
+            .input('clhr', sql.NVarChar, clhr)
+            .query('Update Info.OfficeHour set status=cast(@stat as bit), open_hr=cast(@ophr as time), close_hr=cast(@clhr as time) where ohr_id= ' + ohrId)
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            console.log(err);
+            reject("Unable to Update Office Hour");
+        })
+    });
+}

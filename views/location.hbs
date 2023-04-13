@@ -83,7 +83,6 @@
 			.then(response => response.json())
 			.then(prov_res => {
 			provinceSelect.innerHTML = '';
-			console.log(prov_res);
 			const option = document.createElement('option');
 			option.disabled="disabled";
 			option.text="Choose Province";

@@ -44,6 +44,8 @@ app.engine(".hbs", exphbs.engine({
 }));
 app.set("view engine", ".hbs");
 
+
+
 app.use(express.static("public"));
 app.use(express.urlencoded({extended:true}));
 app.use(favicon(__dirname + '/favicon.ico'));
@@ -224,11 +226,44 @@ app.get('/cities/:province', (req, res) => {
     });
 });
 
+app.get("/officehr",authMiddleware,(req,res)=>{
+    const query1 = "Select *,DATENAME(dw,day_num) as 'DayName',case when Info.OfficeHour.status=0 then 'Closed' else 'Open' end as 'Stat', CONVERT(varchar(15),open_hr,100) as ophr,CONVERT(varchar(15),close_hr,100) as clhr from Info.OfficeHour order by day_num asc"
+    let rows1;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query1)
+        ])
+    }).then(results => {
+        rows1 = results[0].recordset
+        res.render('officehr', { layout: 'admin', rows1 })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Office Hours Not Found"});
+    })
+});
+
+app.get('/showohr/:id', (req, res) => {
+    const ohr_id = req.params.id;
+    const query = "Select *,DATENAME(dw,day_num) as 'DayName',case when Info.OfficeHour.status=0 then 'Closed' else 'Open' end as 'Stat', CONVERT(varchar(15),open_hr,100) as ophr,CONVERT(varchar(15),close_hr,100) as clhr, case when Info.OfficeHour.status=0 then '0' else '1' end as txtstat from Info.OfficeHour where ohr_id="+ ohr_id +" order by day_num asc"
+    let ohr_res;
+    
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        ohr_res= results[0].recordset;
+        res.json(ohr_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Office Hour Not Found"});
+    });
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
 });
-
 
 //-------------POST TRANSACTION-------------------------------------
 app.post('/contact', (req, res) => {
@@ -270,6 +305,16 @@ app.post("/updatelocation",(req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "Location Info Not Saved"});
+    });
+});
+
+app.post("/updateofficehr/:id",(req,res)=>{
+    const ohr_id = req.params.id;
+    tcfData.UPDATE_OFFICEHR(req.body,ohr_id).then(()=>{
+        res.redirect("/officehr");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Office Hour Info Not Saved"});
     });
 });
 
