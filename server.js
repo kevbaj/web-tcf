@@ -317,6 +317,22 @@ app.get('/showacc/:id', (req, res) => {
     });
 });
 
+app.get("/donors",authMiddleware,(req,res)=>{
+    const donor_query = "Select *, case when is_active=1 then 'Active' else 'Deactive' end as d_stat from Donation.Donors where is_active=1";
+    let donor_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(donor_query)
+        ])
+    }).then(results => {
+        donor_res = results[0].recordset
+        res.render('donors', { layout: 'admin', donor_res })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Donors Not Found"});
+    })
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
