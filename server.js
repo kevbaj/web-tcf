@@ -66,9 +66,9 @@ app.use(session({
 
 const authMiddleware = (req, res, next) => {
     if (req.session.isAuthenticated) {
-      next();
+        next();
     } else {
-      res.redirect('/home');
+        res.redirect('/home');
     }
 };
 
@@ -79,14 +79,15 @@ app.use(function(req,res,next){
     next();
 });
 
+const loc_query="SELECT TOP 1 a.*, b.PROV_TEXT, c.CNT_Short,d.CT_NAME FROM Info.Location a join SysInfo.Provinces b on b.PROV_ID=a.loc_prov join SysInfo.Countries c on c.CNT_ID=a.loc_country join SysInfo.Cities d on d.CT_ID=a.loc_city";
+
 //-----------GET FUNCTIONS---------------------------------------------------------------------------------------
 
 app.get("/", (req,res)=>{
-    const query = "SELECT TOP 1 * FROM Info.Location";
     let contac;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(query)
+            pool.request().query(loc_query)
         ])
     }).then(results => {
         contac = results[0].recordset
@@ -98,11 +99,10 @@ app.get("/", (req,res)=>{
 });
 
 app.get("/home", (req,res)=>{
-    const query = "SELECT TOP 1 * FROM Info.Location";
     let contac;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(query)
+            pool.request().query(loc_query)
         ])
     }).then(results => {
         contac = results[0].recordset
@@ -114,11 +114,10 @@ app.get("/home", (req,res)=>{
 });
 
 app.get("/about", (req,res)=>{
-    const query = "SELECT TOP 1 * FROM Info.Location";
     let contac;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(query)
+            pool.request().query(loc_query)
         ])
     }).then(results => {
         contac = results[0].recordset
@@ -131,12 +130,11 @@ app.get("/about", (req,res)=>{
 
 app.get("/contact", (req,res)=>{
     const query1 = "Select *,DATENAME(dw,day_num) as 'DayName',case when Info.OfficeHour.status=0 then 'Closed' else cast(FORMAT(cast(open_hr as datetime), N'hh:mm tt') as nvarchar(20)) + ' - ' + cast(FORMAT(cast(close_hr as datetime), N'hh:mm tt') as nvarchar(20)) end as 'Hrs' from Info.OfficeHour order by day_num asc"
-    const query2 = "SELECT TOP 1 * FROM Info.Location"
     let rows1, rows2, contac
     tcfData.initialize().then(pool=>{
         return Promise.all([
             pool.request().query(query1),
-            pool.request().query(query2)
+            pool.request().query(loc_query)
         ])
     }).then(results => {
         rows1 = results[0].recordset
