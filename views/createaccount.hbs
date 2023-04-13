@@ -1,46 +1,223 @@
 <h1>Create Account</h1>
-<form method="post" action="/saveaccount">
-	<div class="mb-3">
-		<label for="fname" class="form-label">First Name</label>
-		<input type="text" class="form-control" name="fname" id="fname" aria-describedby="emailHelp">
+<div class="row">
+    <div class="col">
+        <button type="button" id="btnNew" name="btnNew" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-modal">NEW ACCOUNT</button>
+    </div>
+</div>
+<div class="row">
+	<div class="col">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th scope="col">FIRST NAME</th>
+					<th scope="col">LAST NAME</th>
+					<th scope="col">STATUS</th>
+					<th scope="col">USER TYPE</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#each rows1}}
+				<tr>
+					<td>{{u_fname}}</td>
+					<td>{{u_lname}}</td>
+					<td>{{Stat}}</td>
+					<td>{{user_type}}</td>
+					<td><button class="edit-btn btn btn-secondary" data-id="{{acc_id}}" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit</button></td>
+				</tr>
+				{{/each}}
+			</tbody>
+		</table>
 	</div>
-	<div class="mb-3">
-		<label for="lname" class="form-label">Last Name</label>
-		<input type="text" class="form-control" name="lname" id="lname" aria-describedby="emailHelp">
-	</div>
-	<div class="mb-3">
-		<label for="jpos" class="form-label">Job Position</label>
-		<input type="text" class="form-control" name="jpos" id="jpos" aria-describedby="emailHelp">
-	</div>
-	<div class="mb-3">
-		<label for="uname" class="form-label">Username</label>
-		<input type="text" class="form-control" name="uname" id="uname" aria-describedby="emailHelp">
-	</div>
-	<div class="mb-3">
-		<label for="pword" class="form-label">Password</label>
-		<input type="password" class="form-control" name="pword" id="pword" aria-describedby="emailHelp">
-	</div>
-	<button type="submit" class="btn btn-primary">Submit</button>
-</form>
+</div>
 
-<br>
-<table class="table table-sm table-bordered">
-	<thead class="thead-dark text-center">
-		<tr>
-			<th scope="col">First Name</th>
-			<th scope="col">Last Name</th>
-			<th scope="col">Status</th>
-			<th scope="col">User Type</th>
-		</tr>
-	</thead>
-	<tbody class="text-center">
-		{{#each rows1}}
-		<tr>
-			<td>{{fname}}</td>
-			<td>{{lname}}</td>
-			<td>{{Stat}}</td>
-			<td>{{user_type}}</td>
-		</tr>
-		{{/each}}
-	</tbody>
-</table>
+<div id="add-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ADD NEW ACCOUNT</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/saveaccount">
+					<div class="row">
+						<div class="col">
+							<label for="utype" class="form-label">User Type:</label>
+							<select class="form-select" id="utype" name="utype" >
+                                <option value="Admin">Admin</option> 
+                                <option value="User">User</option> 
+                            </select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="donor" class="form-label">Donor:</label>
+							<select class="form-select" id="donor" name="donor">
+								<option selected disabled>Choose Donor</option>
+								{{#each donor_res}}
+									<option value="{{donor_id}}">{{d_title}} {{d_fname}} {{d_lname}}</option>
+								{{/each}}
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="fname" class="form-label">First Name</label>
+							<input type="text" class="form-control" name="fname" id="fname">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="lname" class="form-label">Last Name</label>
+							<input type="text" class="form-control" name="lname" id="lname">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="uname" class="form-label">Username</label>
+							<input type="text" class="form-control" name="uname" id="uname">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="pword" class="form-label">Password</label>
+							<input type="password" class="form-control" name="pword" id="pword">
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col">
+							<button type="submit" class="btn btn-success">SAVE</button>
+						</div>
+					</div>
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="edit-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">EDIT ACCOUNT</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+					<div class="row">
+						<div class="col">
+							<label for="utype" class="form-label">User Type:</label>
+							<select class="form-select" id="utype" name="utype" >
+                                <option value="Admin">Admin</option> 
+                                <option value="User">User</option> 
+                            </select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="donor" class="form-label">Donor:</label>
+							<select class="form-select" id="donor" name="donor">
+								<option selected disabled value="0">Choose Donor</option>
+								{{#each donor_res}}
+									<option value="{{donor_id}}">{{d_title}} {{d_fname}} {{d_lname}}</option>
+								{{/each}}
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="fname" class="form-label">First Name</label>
+							<input type="text" class="form-control" name="fname" id="fname">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="lname" class="form-label">Last Name</label>
+							<input type="text" class="form-control" name="lname" id="lname">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="uname" class="form-label">Username</label>
+							<input type="text" class="form-control" name="uname" id="uname">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<label for="pword" class="form-label">Password</label>
+							<input type="password" class="form-control" name="pword" id="pword">
+						</div>
+					</div>
+					<div class="row mt-3">
+						<div class="col">
+							<button type="submit" class="btn btn-success">SAVE</button>
+						</div>
+					</div>
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+	const editBtns = document.querySelectorAll('.edit-btn');
+	const EditModal = document.getElementById('edit-modal');
+    const closeEdit = EditModal.querySelector('.btn-close');
+	const form = EditModal.querySelector('form');
+	const uType = form.querySelector('#utype');
+	const don = form.querySelector('#donor');
+	const fnTxt = form.querySelector('#fname');
+	const lnTXT = form.querySelector('#lname');
+	const unTXT = form.querySelector('#uname');
+	const pwTXT = form.querySelector('#pword');
+
+	editBtns.forEach(btn =>{
+		btn.addEventListener('click', ()=>{
+			const id = btn.getAttribute('data-id');
+            EditModal.style.display = 'block';
+			fetch(`/showacc/${id}`)
+				.then(response => response.json())
+				.then(acc_res =>{
+					uType.innerHTML = '';
+                    const option = document.createElement('option');
+                    option.value = "Admin";
+                    option.text = "Admin";
+                    uType.appendChild(option);
+                    const option2 = document.createElement('option');
+                    option2.value = "User";
+                    option2.text = "User";
+                    uType.appendChild(option2);
+
+					acc_res.forEach(acc_res=>{
+						fnTxt.value=acc_res.fname;
+						lnTXT.value=acc_res.lname;
+						unTXT.value=acc_res.uname;
+						pwTXT.value=acc_res.pword;
+						if(acc_res.user_type =="Admin"){
+                            option.selected=true;
+                            uType.appendChild(option);
+                        }
+                        else if(acc_res.user_type =="User"){
+							option2.selected=true;
+                            uType.appendChild(option2);
+                        }
+						if(acc_res.donor_id !=null){
+							don.value=acc_res.donor_id;
+						}
+						else{
+							don.value="0";
+						}
+					});
+
+					form.action=`/updateaccount/${id}`;
+				})
+				.catch(error => {
+                    console.log(error);
+                    alert('An error occurred');
+                });
+		});
+	});
+
+	closeEdit.addEventListener('click', () => {
+        EditModal.style.display = 'none';
+    });
+</script>

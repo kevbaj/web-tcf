@@ -21,7 +21,7 @@
                     <td>{{imgstat}}</a></td>
                     <td>{{ABT_NAME}}</a></td>
                     <td>{{ABT_TITLE}}</a></td>
-                    <td><button class="edit-btn" data-id="{{ABT_ID}}" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit</button></td>
+                    <td><button class="edit-btn btn btn-secondary" data-id="{{ABT_ID}}" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit</button></td>
                 </tr>
                 {{/each}}
             </tbody>
@@ -185,7 +185,7 @@
     });
 
     closeEdit.addEventListener('click', () => {
-        Addmodal.style.display = 'none';
+        EditModal.style.display = 'none';
     });
 
 </script>

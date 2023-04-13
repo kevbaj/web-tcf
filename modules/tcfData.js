@@ -62,14 +62,26 @@ module.exports.searchLogin=function(loginData){
 
 module.exports.SAVE_ACCOUNT=function(accData){
     return new Promise((resolve,reject)=>{
-        const { fname, lname, jpos, uname, pword } = accData;
+        const { utype, donor, fname, lname, uname, pword } = accData;
+        let is_admin,is_donor;
+        if(utype=="Admin"){
+            is_admin=true;
+            is_donor=false;
+        }
+        else{
+            is_admin=false;
+            is_donor=true;
+        }
         sql.connect(sqlConfig).then(pool => {
             return pool.request()
             .input('fname', sql.NVarChar, fname)
             .input('lname', sql.NVarChar, lname)
             .input('uname', sql.NVarChar, uname)
             .input('pword', sql.NVarChar, pword)
-            .query('INSERT INTO Admin.Accounts(fname,lname,uname,pword,is_active) VALUES (@fname, @lname,@uname, @pword, 1)')
+            .input('is_admin', sql.Bit, is_admin)
+            .input('is_donor', sql.Bit, is_donor)
+            .input('donor', sql.Int, donor)
+            .query('INSERT INTO Admin.Accounts(fname,lname,uname,pword,is_active, is_admin,is_donor,donor_id) VALUES (@fname, @lname,@uname, @pword, 1, @is_admin, @is_donor, case when @is_donor=1 then @donor else NULL end)')
         }).then(() => {
             resolve();
         }).catch(err => {
@@ -148,6 +160,37 @@ module.exports.UPDATE_ABOUTINFO=function(abtData, abt_id){
             .input('atitle', sql.NVarChar, atitle)
             .input('adet', sql.NVarChar, adet)
             .query('Update Info.About set is_image=cast(@imgstat as bit), ABT_NAME=@aname, ABT_TITLE=@atitle, ABT_DET=@adet, ABT_ORDER=@seq where ABT_ID= ' + abt_id)
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            console.log(err);
+            reject("Unable to Update About Info");
+        })
+    });
+}
+
+module.exports.UPDATE_ACCOUNT=function(accData, acc_id){
+    return new Promise((resolve,reject)=>{
+        const { utype, donor, fname, lname, uname, pword } = accData;
+        let is_admin,is_donor;
+        if(utype=="Admin"){
+            is_admin=true;
+            is_donor=false;
+        }
+        else{
+            is_admin=false;
+            is_donor=true;
+        }
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('fname', sql.NVarChar, fname)
+            .input('lname', sql.NVarChar, lname)
+            .input('uname', sql.NVarChar, uname)
+            .input('pword', sql.NVarChar, pword)
+            .input('is_admin', sql.Bit, is_admin)
+            .input('is_donor', sql.Bit, is_donor)
+            .input('donor', sql.Int, donor)
+            .query('Update Admin.Accounts set fname=@fname, lname=@lname, uname=@uname, pword=@pword, is_admin=@is_admin, is_donor=@is_donor, donor_id= case when @is_donor=1 then @donor else NULL end where acc_id= ' + acc_id)
         }).then(() => {
             resolve();
         }).catch(err => {

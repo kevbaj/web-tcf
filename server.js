@@ -153,15 +153,18 @@ app.get("/contact", (req,res)=>{
 });
 
 app.get("/createaccount", authMiddleware, (req,res)=>{
-    const query="Select a.*, case when a.is_active=1 then 'Active' else 'Deactive' end as Stat, case when a.is_admin=1 then 'Admin' else 'User' end as user_type from Admin.Accounts a";
-    let rows1;
+    const query="Select a.*, case when a.is_active=1 then 'Active' else 'Deactive' end as Stat, case when a.is_admin=1 then 'Admin' else 'User' end as user_type, case when a.is_admin=1 then a.fname else b.d_fname end as u_fname, case when a.is_admin=1 then a.lname else b.d_lname end as u_lname from Admin.Accounts a left join Donation.Donors b on b.donor_id=a.donor_id";
+    const donor_query="Select * from Donation.Donors where is_active=1";
+    let rows1, donor_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(query)
+            pool.request().query(query),
+            pool.request().query(donor_query)
         ])
     }).then(results => {
         rows1 = results[0].recordset;
-        res.render("createaccount", { layout: 'admin',rows1 });
+        donor_res= results[1].recordset;
+        res.render("createaccount", { layout: 'admin',rows1,donor_res });
     }).catch(err => {
         console.error(err)
         res.status(500).render("error404",{message: "Users Not Found"});
@@ -296,6 +299,24 @@ app.get('/showabt/:id', (req, res) => {
     });
 });
 
+app.get('/showacc/:id', (req, res) => {
+    const acc_id = req.params.id;
+    const query="Select a.*, case when a.is_active=1 then 'Active' else 'Deactive' end as Stat, case when a.is_admin=1 then 'Admin' else 'User' end as user_type, case when a.is_admin=1 then a.fname else b.d_fname end as u_fname, case when a.is_admin=1 then a.lname else b.d_lname end as u_lname from Admin.Accounts a left join Donation.Donors b on b.donor_id=a.donor_id where a.acc_id=" + acc_id;
+    let acc_res;
+    
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        acc_res= results[0].recordset;
+        res.json(acc_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Account Info Not Found"});
+    });
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
@@ -316,7 +337,12 @@ app.post("/login", (req,res)=>{
         if (loginData.length > 0) {
             req.session.isAuthenticated = true;
             req.session.user = loginData;
-            res.redirect("dashboard");
+            if(loginData[0].is_admin==true){
+                res.redirect("dashboard");
+            }
+            else if(loginData[0].is_admin==false){
+                res.status(500).render("error404",{message: "Under Maintenance"});
+            }
         } else {
             res.render('home', { message: 'Invalid username or password' });
         }
@@ -370,6 +396,16 @@ app.post("/updateabout/:id",(req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "About Info Not Saved"});
+    });
+});
+
+app.post("/updateaccount/:id",(req,res)=>{
+    const acc_id = req.params.id;
+    tcfData.UPDATE_ACCOUNT(req.body,acc_id).then(()=>{
+        res.redirect("/createaccount");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Account Info Not Saved"});
     });
 });
 
