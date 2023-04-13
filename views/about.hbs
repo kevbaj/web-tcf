@@ -1,14 +1,14 @@
-<br><br>
-<div class="row">
-    <div class="col-4">
-        <img class="img rounded img-fluid"
-					src="https://www.scd.org/sites/default/files/styles/lp_featured_image/public/2020-05/cathedral.jpg?h=62c27c7e&itok=L8TGs5J3" alt="TCF">
-    </div>
-    <div class="col-8">
-        <h1 class="display-4">About The Catholic Foundation</h1>
-        <p>The Diocese of Sacramento formed officially in May 1886, transitioning the See from the Diocese of Grass Valley to the capital city of Sacramento. Grass Valley had served the vast Northern California regions since 1868. Prior to that, the Vatican first identified Marysville as the location for a vicariate apostolic – an interim ecclesiastical jurisdiction for the Northern California church, which had formerly been a part of the Archdiocese of San Francisco.</p>
-        <p>
-            The Diocese of Sacramento is one of 12 dioceses in California and is in the province of San Francisco. Our community encompasses 102 parishes, 40 missions, three Newman Centers, 36 elementary schools and six high schools. The total population of this area is more than 3.6 million people and the total Catholic population is more than 1 million people.
-        </p>
+{{#each abt_res}}
+<div class="row mb-5">
+    <div class="col">
+            <h3 class="display-6 text-center">{{ABT_TITLE}}</h3>
+            {{#if is_image}}
+            <div class="text-center">
+                <img class="img rounded img-fluid" src="{{ABT_DET}}" >
+            </div>
+            {{else}}
+                {{ABT_DET}}
+            {{/if}}
     </div>
 </div>
+{{/each}}

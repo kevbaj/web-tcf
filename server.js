@@ -116,14 +116,17 @@ app.get("/home", (req,res)=>{
 });
 
 app.get("/about", (req,res)=>{
-    let contac;
+    const abt_query = "Select * from Info.About order by ABT_ORDER ASC";
+    let contac, abt_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(loc_query)
+            pool.request().query(loc_query),
+            pool.request().query(abt_query),
         ])
     }).then(results => {
         contac = results[0].recordset
-        res.render('about', { contac })
+        abt_res = results[1].recordset
+        res.render('about', { contac,abt_res })
     }).catch(err => {
         console.error(err)
         res.status(500).render("error404",{message: "Contact Not Found"});
@@ -149,8 +152,8 @@ app.get("/contact", (req,res)=>{
     })
 });
 
-app.get("/createadmin", authMiddleware, (req,res)=>{
-    const query="Select *, case when is_active=1 then 'Active' else 'Deactive' end as Stat from Admin.Accounts";
+app.get("/createaccount", authMiddleware, (req,res)=>{
+    const query="Select a.*, case when a.is_active=1 then 'Active' else 'Deactive' end as Stat, case when a.is_admin=1 then 'Admin' else 'User' end as user_type from Admin.Accounts a";
     let rows1;
     tcfData.initialize().then(pool=>{
         return Promise.all([
@@ -158,12 +161,11 @@ app.get("/createadmin", authMiddleware, (req,res)=>{
         ])
     }).then(results => {
         rows1 = results[0].recordset;
-        res.render("createadmin", { layout: 'admin',rows1 });
+        res.render("createaccount", { layout: 'admin',rows1 });
     }).catch(err => {
         console.error(err)
         res.status(500).render("error404",{message: "Users Not Found"});
     })
-    
 });
 
 app.get("/dashboard", authMiddleware,(req,res)=>{
@@ -260,6 +262,40 @@ app.get('/showohr/:id', (req, res) => {
     });
 });
 
+app.get("/aboutinfo",authMiddleware,(req,res)=>{
+    const abt_qry = "Select *,case when is_image=1 then 'YES' else 'NO' end as imgstat from Info.About order by ABT_ORDER ASC";
+    let row_abt;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(abt_qry)
+        ])
+    }).then(results => {
+        row_abt = results[0].recordset
+        res.render('aboutinfo', { layout: 'admin', row_abt })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "About Info Not Found"});
+    })
+});
+
+app.get('/showabt/:id', (req, res) => {
+    const abt_id = req.params.id;
+    const query = "Select *,case when is_image=1 then 'YES' else 'NO' end as imgstat, case when is_image=1 then '1' else '0' end statTxt from Info.About where ABT_ID="+ abt_id +" order by ABT_ORDER ASC ";
+    let abt_res;
+    
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        abt_res= results[0].recordset;
+        res.json(abt_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "About Info Not Found"});
+    });
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
@@ -290,12 +326,12 @@ app.post("/login", (req,res)=>{
     });
 });
 
-app.post("/saveadmin",(req,res)=>{
-    tcfData.SAVE_ADMINACCOUNT(req.body).then(()=>{
-        res.redirect("/createadmin");
+app.post("/saveaccount",(req,res)=>{
+    tcfData.SAVE_ACCOUNT(req.body).then(()=>{
+        res.redirect("/createaccount");
     }).catch(err=>{
         console.error(err)
-        res.status(500).render("error404",{message: "Admin Account Not Saved"});
+        res.status(500).render("error404",{message: "Account Not Saved"});
     });
 });
 
@@ -315,6 +351,25 @@ app.post("/updateofficehr/:id",(req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "Office Hour Info Not Saved"});
+    });
+});
+
+app.post("/saveabout",(req,res)=>{
+    tcfData.SAVE_ABOUTINFO(req.body).then(()=>{
+        res.redirect("/aboutinfo");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "About Info Not Saved"});
+    });
+});
+
+app.post("/updateabout/:id",(req,res)=>{
+    const abt_id = req.params.id;
+    tcfData.UPDATE_ABOUTINFO(req.body,abt_id).then(()=>{
+        res.redirect("/aboutinfo");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "About Info Not Saved"});
     });
 });
 

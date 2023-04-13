@@ -1,8 +1,5 @@
-<h1>Create Admin Account</h1>
-{{#if message}}
-<p style="color: red">{{message}}</p>
-{{/if}}
-<form method="post" action="/saveadmin">
+<h1>Create Account</h1>
+<form method="post" action="/saveaccount">
 	<div class="mb-3">
 		<label for="fname" class="form-label">First Name</label>
 		<input type="text" class="form-control" name="fname" id="fname" aria-describedby="emailHelp">
@@ -32,8 +29,8 @@
 		<tr>
 			<th scope="col">First Name</th>
 			<th scope="col">Last Name</th>
-			<th scope="col">Job Position</th>
 			<th scope="col">Status</th>
+			<th scope="col">User Type</th>
 		</tr>
 	</thead>
 	<tbody class="text-center">
@@ -41,8 +38,8 @@
 		<tr>
 			<td>{{fname}}</td>
 			<td>{{lname}}</td>
-			<td>{{jpos}}</td>
 			<td>{{Stat}}</td>
+			<td>{{user_type}}</td>
 		</tr>
 		{{/each}}
 	</tbody>

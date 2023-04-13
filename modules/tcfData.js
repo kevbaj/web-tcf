@@ -60,20 +60,20 @@ module.exports.searchLogin=function(loginData){
     })
 }
 
-module.exports.SAVE_ADMINACCOUNT=function(accData){
+module.exports.SAVE_ACCOUNT=function(accData){
     return new Promise((resolve,reject)=>{
         const { fname, lname, jpos, uname, pword } = accData;
         sql.connect(sqlConfig).then(pool => {
             return pool.request()
             .input('fname', sql.NVarChar, fname)
             .input('lname', sql.NVarChar, lname)
-            .input('jpos', sql.NVarChar, jpos)
             .input('uname', sql.NVarChar, uname)
             .input('pword', sql.NVarChar, pword)
-            .query('INSERT INTO Admin.Accounts(fname,lname,jpos,uname,pword,is_active) VALUES (@fname, @lname,@jpos,@uname, @pword, 1)')
+            .query('INSERT INTO Admin.Accounts(fname,lname,uname,pword,is_active) VALUES (@fname, @lname,@uname, @pword, 1)')
         }).then(() => {
             resolve();
         }).catch(err => {
+            console.log(err);
             reject("Unable to Add Account");
         })
     });
@@ -114,6 +114,45 @@ module.exports.UPDATE_OFFICEHR=function(offData, ohrId){
         }).catch(err => {
             console.log(err);
             reject("Unable to Update Office Hour");
+        })
+    });
+}
+
+module.exports.SAVE_ABOUTINFO=function(abtData){
+    return new Promise((resolve,reject)=>{
+        const { seq, imgstat, aname, atitle, adet } = abtData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('seq', sql.NVarChar, seq)
+            .input('imgstat', sql.NVarChar, imgstat)
+            .input('aname', sql.NVarChar, aname)
+            .input('atitle', sql.NVarChar, atitle)
+            .input('adet', sql.NVarChar, adet)
+            .query('INSERT INTO Info.About(ABT_NAME,ABT_TITLE,ABT_DET,ABT_ORDER,is_image) VALUES (@aname, @atitle,@adet,@seq, @imgstat)')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Add Account");
+        })
+    });
+}
+
+module.exports.UPDATE_ABOUTINFO=function(abtData, abt_id){
+    return new Promise((resolve,reject)=>{
+        const { seq, imgstat, aname, atitle, adet } = abtData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('seq', sql.NVarChar, seq)
+            .input('imgstat', sql.NVarChar, imgstat)
+            .input('aname', sql.NVarChar, aname)
+            .input('atitle', sql.NVarChar, atitle)
+            .input('adet', sql.NVarChar, adet)
+            .query('Update Info.About set is_image=cast(@imgstat as bit), ABT_NAME=@aname, ABT_TITLE=@atitle, ABT_DET=@adet, ABT_ORDER=@seq where ABT_ID= ' + abt_id)
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            console.log(err);
+            reject("Unable to Update About Info");
         })
     });
 }

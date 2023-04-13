@@ -1,0 +1,191 @@
+<h1>Edit About Page</h1>
+<div class="row">
+    <div class="col">
+        <button type="button" id="btnNew" name="btnNew" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-modal">ADD NEW</button>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <table class="table table-hover">
+            <thead>
+                <th>SEQUENCE</th>
+                <th>IMAGE STATUS</th>
+                <th>NAME</th>
+                <th>TITLE</th>
+                <th>DETAIL</th>
+            </thead>
+            <tbody>
+                {{#each row_abt}}
+                <tr>
+                    <td>{{ABT_ORDER}}</td>
+                    <td>{{imgstat}}</a></td>
+                    <td>{{ABT_NAME}}</a></td>
+                    <td>{{ABT_TITLE}}</a></td>
+                    <td><button class="edit-btn" data-id="{{ABT_ID}}" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit</button></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="add-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">ADD NEW INFO</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="/saveabout">
+                    <div class="row">
+                        <div class="col">
+                            <label for="seq" class="form-label">Sequence:</label>
+                            <input type="text" class="form-control" name="seq" id="seq">
+                        </div>
+                        <div class="col">
+                            <label for="imgstat" class="form-label">Image Status:</label>
+                            <select class="form-select" id="imgstat" name="imgstat" >
+                                <option value="1">Yes</option> 
+                                <option value="0">No</option> 
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="aname" class="form-label">Name:</label>
+                            <input type="text" class="form-control" name="aname" id="aname">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="atitle" class="form-label">Title:</label>
+                            <input type="text" class="form-control" name="atitle" id="atitle">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="adet" class="form-label">Detail:</label>
+                            <textarea type="text" rows="5" class="form-control" name="adet" id="adet"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success">SAVE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="edit-modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">EDIT ABOUT INFO</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="row">
+                        <div class="col">
+                            <label for="seq" class="form-label">Sequence:</label>
+                            <input type="text" class="form-control" name="seq" id="seq">
+                        </div>
+                        <div class="col">
+                            <label for="imgstat" class="form-label">Image Status:</label>
+                            <select class="form-select" id="imgstat" name="imgstat" >
+                                <option value="1">Yes</option> 
+                                <option value="0">No</option> 
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="aname" class="form-label">Name:</label>
+                            <input type="text" class="form-control" name="aname" id="aname">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="atitle" class="form-label">Title:</label>
+                            <input type="text" class="form-control" name="atitle" id="atitle">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="adet" class="form-label">Detail:</label>
+                            <textarea type="text" rows="5" class="form-control" name="adet" id="adet"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success">SAVE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const editBtns = document.querySelectorAll('.edit-btn');
+    const Addmodal = document.getElementById('add-modal');
+    const closeAdd = Addmodal.querySelector('.btn-close');
+    const EditModal = document.getElementById('edit-modal');
+    const closeEdit = EditModal.querySelector('.btn-close');
+    const form = EditModal.querySelector('form');
+    const txtSeq = form.querySelector('#seq');
+    const txtName = form.querySelector('#aname');
+    const txtTitle = form.querySelector('#atitle');
+    const txtDet = form.querySelector('#adet');
+    const statDD = form.querySelector('#imgstat');
+    
+    editBtns.forEach(btn =>{
+        btn.addEventListener('click', ()=>{
+            const id = btn.getAttribute('data-id');
+            EditModal.style.display = 'block';
+            fetch(`/showabt/${id}`)
+                .then(response => response.json())
+                .then(abt_res =>{
+                    statDD.innerHTML = '';
+                    const option = document.createElement('option');
+                    option.value = "1";
+                    option.text = "YES";
+                    statDD.appendChild(option);
+                    const option2 = document.createElement('option');
+                    option2.value = "0";
+                    option2.text = "NO";
+                    statDD.appendChild(option2);
+
+                    abt_res.forEach(abt_res =>{
+                        txtSeq.value=abt_res.ABT_ORDER;
+                        txtName.value=abt_res.ABT_NAME;
+                        txtTitle.value=abt_res.ABT_TITLE;
+                        txtDet.value=abt_res.ABT_DET;
+                        if(abt_res.statTxt =="0"){
+                            option2.selected=true;
+                            statDD.appendChild(option2);
+                        }
+                        else if(abt_res.statTxt =="1"){
+                            option.selected=true;
+                            statDD.appendChild(option);
+                        }
+                    });
+                    form.action=`/updateabout/${id}`;
+                })
+                .catch(error => {
+                    console.log(error);
+                    alert('An error occurred');
+                });
+        });
+    });
+
+    closeAdd.addEventListener('click', () => {
+        Addmodal.style.display = 'none';
+    });
+
+    closeEdit.addEventListener('click', () => {
+        Addmodal.style.display = 'none';
+    });
+
+</script>
