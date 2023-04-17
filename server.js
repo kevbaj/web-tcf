@@ -317,15 +317,67 @@ app.get('/showacc/:id', (req, res) => {
     });
 });
 
+app.get('/donors/provinces/:countryCode', (req, res) => {
+    const countryCode = req.params.countryCode;
+    const query = "Select a.* from SysInfo.Provinces a where a.CNT_ID="+ countryCode +" order by a.PROV_TEXT";
+    let prov_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        prov_res= results[0].recordset;
+        res.json(prov_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Province Not Found"});
+    });
+});
+
+app.get('/donors/cities/:province', (req, res) => {
+    const provinceCode = req.params.province;
+    const query = "Select a.* from SysInfo.Cities a where a.PROV_ID="+ provinceCode +" order by a.CT_NAME";
+    let city_res;
+    
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        city_res= results[0].recordset;
+        res.json(city_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "City Not Found"});
+    });
+});
+
+app.get("/donors/add", authMiddleware, (req,res)=>{
+    const cnt_query = "Select a.* from SysInfo.Countries a order by a.CNT_Long";
+    let cnt_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(cnt_query)
+        ])
+    }).then(results => {
+        cnt_res = results[0].recordset;
+        res.render('adddonors', { layout: 'admin', cnt_res })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Country Not Found"});
+    })
+});
+
 app.get("/donors",authMiddleware,(req,res)=>{
     const donor_query = "Select *, case when is_active=1 then 'Active' else 'Deactive' end as d_stat from Donation.Donors where is_active=1";
+    
     let donor_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
             pool.request().query(donor_query)
         ])
     }).then(results => {
-        donor_res = results[0].recordset
+        donor_res = results[0].recordset;
         res.render('donors', { layout: 'admin', donor_res })
     }).catch(err => {
         console.error(err)
@@ -422,6 +474,15 @@ app.post("/updateaccount/:id",(req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "Account Info Not Saved"});
+    });
+});
+
+app.post("/savedonor",(req,res)=>{
+    tcfData.SAVE_DONOR(req.body).then(()=>{
+        res.redirect("/donors");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Donor Info Not Saved"});
     });
 });
 

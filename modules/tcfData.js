@@ -199,3 +199,27 @@ module.exports.UPDATE_ACCOUNT=function(accData, acc_id){
         })
     });
 }
+
+module.exports.SAVE_DONOR=function(donData){
+    return new Promise((resolve,reject)=>{
+        const { dtle, fname, lname, addr, country, province, city,postal,phone,emailadd} = donData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('dtle', sql.NVarChar, dtle)
+            .input('fname', sql.NVarChar, fname)
+            .input('lname', sql.NVarChar, lname)
+            .input('addr', sql.NVarChar, addr)
+            .input('country', sql.NVarChar, country)
+            .input('province', sql.NVarChar, province)
+            .input('city', sql.NVarChar, city)
+            .input('postal', sql.NVarChar, postal)
+            .input('phone', sql.NVarChar, phone)
+            .input('emailadd', sql.NVarChar, emailadd)
+            .query('INSERT INTO Donation.Donors(d_title,d_fname,d_lname,d_addr,d_city,d_prov,d_country,d_postal,d_phone,d_email,is_active) VALUES (@dtle, @fname,@lname,@addr, @country, @province, @city, @postal, @phone, @emailadd, 1)')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Add Donor");
+        })
+    });
+}
