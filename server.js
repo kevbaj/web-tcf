@@ -384,21 +384,73 @@ app.get("/donors",authMiddleware,(req,res)=>{
     })
 });
 
+app.get('/appeals/provinces/:countryCode', (req, res) => {
+    const countryCode = req.params.countryCode;
+    const query = "Select a.* from SysInfo.Provinces a where a.CNT_ID="+ countryCode +" order by a.PROV_TEXT";
+    let prov_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        prov_res= results[0].recordset;
+        res.json(prov_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Province Not Found"});
+    });
+});
+
+app.get('/appeals/cities/:province', (req, res) => {
+    const provinceCode = req.params.province;
+    const query = "Select a.* from SysInfo.Cities a where a.PROV_ID="+ provinceCode +" order by a.CT_NAME";
+    let city_res;
+    
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        city_res= results[0].recordset;
+        res.json(city_res);
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "City Not Found"});
+    });
+});
+
 app.get("/appeals",authMiddleware,(req,res)=>{
-    const ap_query = "Select *, case when is_active=1 then 'Active' else 'Deactive' end as a_stat from Donation.Appeals where is_active=1";
+    const ap_query = "Select *, case when is_active=1 then 'Active' else 'Deactive' end as ap_stat from Donation.Appeals where is_active=1";
     let ap_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(ap_res)
+            pool.request().query(ap_query)
         ])
     }).then(results => {
-        donor_res = results[0].recordset;
+        ap_res = results[0].recordset;
         res.render('appeals', { layout: 'admin', ap_res })
     }).catch(err => {
         console.error(err)
         res.status(500).render("error404",{message: "Appeals Not Found"});
     })
 });
+
+app.get("/appeals/add", authMiddleware, (req,res)=>{
+    const cnt_query = "Select a.* from SysInfo.Countries a order by a.CNT_Long";
+    let cnt_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(cnt_query)
+        ])
+    }).then(results => {
+        cnt_res = results[0].recordset;
+        res.render('addappeals', { layout: 'admin', cnt_res })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Country Not Found"});
+    })
+});
+
 
 app.get('/logout', (req, res) => {
     req.session.destroy();
@@ -498,6 +550,15 @@ app.post("/savedonor",(req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "Donor Info Not Saved"});
+    });
+});
+
+app.post("/saveappeal",(req,res)=>{
+    tcfData.SAVE_APPEAL(req.body).then(()=>{
+        res.redirect("/appeals");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Appeal Info Not Saved"});
     });
 });
 

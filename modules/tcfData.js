@@ -223,3 +223,25 @@ module.exports.SAVE_DONOR=function(donData){
         })
     });
 }
+
+module.exports.SAVE_APPEAL=function(appData){
+    return new Promise((resolve,reject)=>{
+        const { aname, addr, country, province, city,postal,phone,emailadd} = appData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('aname', sql.NVarChar, aname)
+            .input('addr', sql.NVarChar, addr)
+            .input('country', sql.NVarChar, country)
+            .input('province', sql.NVarChar, province)
+            .input('city', sql.NVarChar, city)
+            .input('postal', sql.NVarChar, postal)
+            .input('phone', sql.NVarChar, phone)
+            .input('emailadd', sql.NVarChar, emailadd)
+            .query('INSERT INTO Donation.Appeals(ap_name,ap_addr,ap_city,ap_prov,ap_cnt,ap_postal,ap_phone,ap_email,is_active) VALUES (@aname,@addr, @country, @province, @city, @postal, @phone, @emailadd, 1)')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Add Appeal");
+        })
+    });
+}

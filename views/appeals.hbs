@@ -1,4 +1,4 @@
-<h1>Donors</h1>
+<h1>Appeals</h1>
 <div class="row">
     <div class="col">
         <button type="button" id="btnNew" name="btnNew" class="btn btn-primary" >NEW APPEAL</button>
@@ -20,9 +20,9 @@
                 <tr>
                     <td>{{appeal_id}}</td>
 					<td>{{ap_name}}</td>
-					<td>{{d_email}}</td>
-					<td>{{d_phone}}</td>
-                    <td>{{d_stat}}</td>
+					<td>{{ap_email}}</td>
+					<td>{{ap_phone}}</td>
+                    <td>{{ap_stat}}</td>
 					<td><button class="edit-btn btn btn-secondary" data-id="{{appeal_id}}" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit</button></td>
                 </tr>
                 {{/each}}

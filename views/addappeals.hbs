@@ -1,0 +1,128 @@
+<h1>Add New Appeals</h1>
+<form method="post" action="/saveappeal">
+    <div class="row">
+        <div class="col">
+            <label for="aname" class="form-label">Appeal Name</label>
+            <input type="text" class="form-control" name="aname" id="aname" required>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <label for="addr" class="form-label">Address</label>
+            <input type="text" class="form-control" name="addr" id="addr" required>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <label for="country" class="form-label">Country</label>
+            <select class="form-select" id="country" name="country">
+                <option selected=true disabled="disabled">Choose Country</option>
+                {{#each cnt_res}}
+                <option value="{{CNT_ID}}"> {{CNT_Long}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col">
+            <label for="province" class="form-label">Province</label>
+            <select class="form-select" id="province" name="province">
+                <option selected="true" disabled="disabled">Choose Province</option>
+            </select>
+        </div>
+        <div class="col">
+            <label for="city" class="form-label">City</label>
+			<select class="form-select" id="city" name="city">
+				<option selected="true" disabled="disabled">Choose City</option> 
+			</select>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <label for="postal" class="form-label">Postal Code</label>
+			<input type="text" class="form-control" name="postal" id="postal" required>
+        </div>
+        <div class="col">
+            <label for="phone" class="form-label">Phone Number</label>
+			<input type="text" class="form-control" name="phone" id="phone" >
+        </div>
+        <div class="col">
+            <label for="emailadd" class="form-label">Email Address</label>
+			<input type="email" class="form-control" name="emailadd" id="emailadd" required>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <button type="submit" class="btn btn-success">SAVE</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" id="btnBack" name="btnBack" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    const countrySelect = document.getElementById('country');
+    const provinceSelect = document.getElementById('province');
+    const citySelect = document.getElementById('city');
+
+    document.getElementById("btnBack").onclick = function () {
+        location.href = "/appeals";
+    };
+
+    countrySelect.addEventListener('change', () => {
+        callProvinces();
+    });
+
+    provinceSelect.addEventListener('change', () => {
+		callCities();
+  	});
+
+    function callProvinces() {
+        const countryCode = countrySelect.value;
+        fetch(`/appeals/provinces/${countryCode}`)
+            .then(response => response.json())
+            .then(prov_res => {
+                provinceSelect.innerHTML = '';
+                const option = document.createElement('option');
+                option.disabled = "disabled";
+                option.text = "Choose Province";
+                option.selected = true;
+                provinceSelect.appendChild(option);
+                let selVal = -1;
+                prov_res.forEach(prov_res => {
+                    const option2 = document.createElement('option');
+                    option2.value = prov_res.PROV_ID;
+                    option2.text = prov_res.PROV_TEXT;
+                    provinceSelect.appendChild(option2);
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                alert('An error occurred');
+            });
+    }
+
+    function callCities(){
+		const province = provinceSelect.value;
+		fetch(`/appeals/cities/${province}`)
+		.then(response => response.json())
+		.then(city_res => {
+			citySelect.innerHTML = '';
+			const option = document.createElement('option');
+			option.selected=true;
+			option.disabled="disabled";
+			option.text="Choose City";
+			citySelect.appendChild(option);
+			city_res.forEach(city_res => {
+				const option2 = document.createElement('option');
+				option2.value = city_res.CT_ID;
+				option2.text = city_res.CT_NAME;
+				citySelect.appendChild(option2);
+				
+			});
+		})
+		.catch(error => {
+			console.error(error);
+			alert('An error occurred');
+		});
+	}
+
+</script>
