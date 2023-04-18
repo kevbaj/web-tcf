@@ -4,6 +4,8 @@ const express = require("express");
 const session = require('express-session');
 const fetch = require('node-fetch');
 const MSSQLSessionStore = require('connect-mssql')(session);
+const moment = require('moment-timezone');
+const torontoTime = moment().tz('America/Toronto');
 const app = express();
 
 const bodyParser = require('body-parser');
@@ -31,6 +33,13 @@ app.engine(".hbs", exphbs.engine({
             return options.fn(this);
             }
         },
+        isLessThan: function(a, b, options){
+            if (a < b) {
+                return options.fn(this);
+            } else {
+                return options.inverse(this);
+            }
+        },
         select: function(value, options) {
             return options.fn(this)
               .split('\n')
@@ -43,8 +52,6 @@ app.engine(".hbs", exphbs.engine({
     }
 }));
 app.set("view engine", ".hbs");
-
-
 
 app.use(express.static("public"));
 app.use(express.urlencoded({extended:true}));
@@ -86,14 +93,18 @@ const loc_query="SELECT TOP 1 a.*, b.PROV_TEXT, c.CNT_Short,d.CT_NAME FROM Info.
 //-----------GET FUNCTIONS---------------------------------------------------------------------------------------
 
 app.get("/", (req,res)=>{
-    let contac;
+    let dtnow = torontoTime.format('MM-D-YYYY h:mm:ss');
+    const ne_query = "Select *, case when ne_type=1 then 'NEWS' when ne_type=2 then 'EVENTS' end as type_txt,CONCAT(LEFT(ne_det, 60), '....') as det_short, DATEDIFF(minute,ne_dtpost,cast('" + dtnow + "' as datetime)) as dtdif, FORMAT(ne_dtpost, 'MMM dd yyyy hh:mm tt') as dtname from Info.NewsEvents";
+    let contac, ne_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(loc_query)
+            pool.request().query(loc_query),
+            pool.request().query(ne_query)
         ])
     }).then(results => {
-        contac = results[0].recordset
-        res.render('home', { contac })
+        contac = results[0].recordset;
+        ne_res = results[1].recordset;
+        res.render('home', { contac,ne_res })
     }).catch(err => {
         console.error(err)
         res.status(500).render("error404",{message: "Contact Not Found"});
@@ -101,14 +112,18 @@ app.get("/", (req,res)=>{
 });
 
 app.get("/home", (req,res)=>{
-    let contac;
+    let dtnow = torontoTime.format('MM-D-YYYY h:mm:ss');
+    const ne_query = "Select *, case when ne_type=1 then 'NEWS' when ne_type=2 then 'EVENTS' end as type_txt,CONCAT(LEFT(ne_det, 60), '....') as det_short, DATEDIFF(minute,ne_dtpost,cast('" + dtnow + "' as datetime)) as dtdif, FORMAT(ne_dtpost, 'MMM dd yyyy hh:mm tt') as dtname from Info.NewsEvents";
+    let contac, ne_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(loc_query)
+            pool.request().query(loc_query),
+            pool.request().query(ne_query)
         ])
     }).then(results => {
-        contac = results[0].recordset
-        res.render('home', { contac })
+        contac = results[0].recordset;
+        ne_res = results[1].recordset;
+        res.render('home', { contac, ne_res })
     }).catch(err => {
         console.error(err)
         res.status(500).render("error404",{message: "Contact Not Found"});

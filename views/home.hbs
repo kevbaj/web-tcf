@@ -30,41 +30,34 @@
 					src="/images/welcome.jpeg" alt="TCF">
       <h1 class="display-4">Welcome to The Catholic Foundation</h1>
 </div>
-
 <hr class="my-4">
 <h1 class="text-center"><span class="badge bg-secondary">News and Events</span></h1>
-<div class="row">
-    <div class="card-group">
-        <div class="card">
-            <img src="https://donorbox.org/nonprofit-blog/wp-content/uploads/2017/11/Community-fundraising-for-church.jpg" class="card-img-top" alt="...">
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        {{#each ne_res}}
+        <div class="card h-100">
+            <img src="{{ne_image}}" class="card-img-top" alt="...">
             <div class="card-body">
-            <h5 class="card-title">News 1</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <span class="badge text-bg-dark">{{type_txt}}</span>
+                <br>
+                <h5 class="card-title">{{ne_title}}</h5>
+                <p class="card-text">{{det_short}}</p>
+                <br>
+                <div class="d-grid gap-2">
+                    <a href="/newsevents/{{ne_id}}" class="btn btn-primary">Read More</a>
+                </div>
             </div>
             <div class="card-footer">
-                <small class="text-body-secondary">Last updated 3 mins ago</small>
+                <small class="text-body-secondary">
+                    {{#isLessThan dtdif 60}}
+                    Last updated {{dtdif}} mins ago
+                    {{else}}
+                    Posted on {{dtname}}
+                    {{/isLessThan}}
+                </small>
             </div>
         </div>
-        <div class="card">
-            <img src="https://donorbox.org/nonprofit-blog/wp-content/uploads/2017/11/Community-fundraising-for-church.jpg" class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title">News 2</h5>
-            <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-            </div>
-            <div class="card-footer">
-                <small class="text-body-secondary">Last updated 3 mins ago</small>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://donorbox.org/nonprofit-blog/wp-content/uploads/2017/11/Community-fundraising-for-church.jpg" class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title">Event 1</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-            </div>
-            <div class="card-footer">
-                <small class="text-body-secondary">Last updated 3 mins ago</small>
-            </div>
-        </div>
+        {{/each}}
     </div>
 </div>
         
