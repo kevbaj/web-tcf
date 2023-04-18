@@ -466,6 +466,24 @@ app.get("/appeals/add", authMiddleware, (req,res)=>{
     })
 });
 
+app.get("/newseventinfo/:ne_id", (req,res)=>{
+    const ne_id = req.params.ne_id;
+    const ne_query = "Select *, case when ne_type=1 then 'News' when ne_type=2 then 'Events' end as type_txt, FORMAT(ne_dtpost, 'MMM dd yyyy hh:mm tt') as dtname from Info.NewsEvents where ne_id=" + ne_id;
+    let contac, ne_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(loc_query),
+            pool.request().query(ne_query),
+        ])
+    }).then(results => {
+        contac = results[0].recordset
+        ne_res = results[1].recordset
+        res.render('newseventinfo', { contac,ne_res })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "News Events Not Found"});
+    })
+});
 
 app.get('/logout', (req, res) => {
     req.session.destroy();
