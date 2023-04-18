@@ -1,0 +1,43 @@
+<h1>Add News/Events</h1>
+<form method="post" action="/savenewsevents">
+    <div class="row">
+        <div class="col">
+            <label for="netype" class="form-label">Type</label>
+            <select class="form-select" id="netype" name="netype">
+                <option selected="true" disabled="disabled">Choose Type</option>
+                <option value="1">News</option>
+                <option value="2">Events</option>
+            </select>
+        </div>
+        <div class="col">
+            <label for="imgl" class="form-label">Image Link</label>
+            <input type="text" class="form-control" name="imgl" id="imgl" required>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" name="title" id="title" required>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col">
+            <label for="det" class="form-label">Details</label>
+			<textarea type="text" rows="8" class="form-control" name="det" id="det" required></textarea>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <button type="submit" class="btn btn-success">SAVE</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" id="btnBack" name="btnBack" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.getElementById("btnBack").onclick = function () {
+        location.href = "/newsevents";
+    };
+</script>

@@ -33,8 +33,8 @@
 <hr class="my-4">
 <h1 class="text-center"><span class="badge bg-secondary">News and Events</span></h1>
 <div class="row row-cols-1 row-cols-md-3 g-4">
+    {{#each ne_res}}
     <div class="col">
-        {{#each ne_res}}
         <div class="card h-100">
             <img src="{{ne_image}}" class="card-img-top" alt="...">
             <div class="card-body">
@@ -57,7 +57,7 @@
                 </small>
             </div>
         </div>
-        {{/each}}
     </div>
+    {{/each}}
 </div>
         

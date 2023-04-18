@@ -245,3 +245,22 @@ module.exports.SAVE_APPEAL=function(appData){
         })
     });
 }
+
+module.exports.SAVE_NEWSEVENTS=function(neData){
+    return new Promise((resolve,reject)=>{
+        const { netype, imgl, title, det, dtnow} = neData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('netype', sql.NVarChar, netype)
+            .input('imgl', sql.NVarChar, imgl)
+            .input('title', sql.NVarChar, title)
+            .input('det', sql.NVarChar, det)
+            .input('dtnow', sql.NVarChar, dtnow)
+            .query('INSERT INTO Info.NewsEvents(ne_type,ne_dtpost,ne_title,ne_det,ne_image,is_delete) VALUES (@netype,cast(@dtnow as datetime),@title,@det,@imgl, 0)')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Add News Events");
+        })
+    });
+}

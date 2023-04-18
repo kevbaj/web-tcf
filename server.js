@@ -485,6 +485,38 @@ app.get("/newseventinfo/:ne_id", (req,res)=>{
     })
 });
 
+app.get("/newsevents",authMiddleware,(req,res)=>{
+    const ne_query = "Select *, case when ne_type=1 then 'News' when ne_type=2 then 'Events' end as type_txt, FORMAT(ne_dtpost, 'MMM dd yyyy hh:mm tt') as dtname from Info.NewsEvents where is_delete=0 order by ne_dtpost DESC";
+    let ne_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(ne_query)
+        ])
+    }).then(results => {
+        ne_res = results[0].recordset;
+        res.render('newsevents', { layout: 'admin', ne_res })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "News Events Not Found"});
+    })
+});
+
+app.get("/newsevents/add", authMiddleware, (req,res)=>{
+    const query = "SELECT GETDATE()";
+    let resu;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(query)
+        ])
+    }).then(results => {
+        resu = results[0].recordset;
+        res.render('addnewsevents', { layout: 'admin', resu })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Database Not Found"});
+    })
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
@@ -592,6 +624,16 @@ app.post("/saveappeal",(req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "Appeal Info Not Saved"});
+    });
+});
+
+app.post("/savenewsevents",(req,res)=>{
+    req.body.dtnow = torontoTime.format('MM-D-YYYY h:mm:ss');
+    tcfData.SAVE_NEWSEVENTS(req.body).then(()=>{
+        res.redirect("/newsevents");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "News Events Info Not Saved"});
     });
 });
 
