@@ -538,7 +538,7 @@ app.post("/login", (req,res)=>{
             req.session.isAuthenticated = true;
             req.session.user = loginData;
             if(loginData[0].is_admin==true){
-                res.redirect("dashboard");
+                res.redirect("donors");
             }
             else if(loginData[0].is_admin==false){
                 res.status(500).render("error404",{message: "Under Maintenance"});
