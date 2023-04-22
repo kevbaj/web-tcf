@@ -529,7 +529,27 @@ app.get("/donations",authMiddleware,(req,res)=>{
         res.render('donations', { layout: 'admin', dn_res })
     }).catch(err => {
         console.error(err)
-        res.status(500).render("error404",{message: "Appeals Not Found"});
+        res.status(500).render("error404",{message: "Donations Not Found"});
+    })
+});
+
+app.get("/donations/add", authMiddleware, (req,res)=>{
+    const ap_query = "Select *, case when is_active=1 then 'Active' else 'Deactive' end as ap_stat from Donation.Appeals where is_active=1";
+    let ap_res;
+    const donor_query = "Select *, case when is_active=1 then 'Active' else 'Deactive' end as d_stat from Donation.Donors where is_active=1";
+    let donor_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(ap_query),
+            pool.request().query(donor_query)
+        ])
+    }).then(results => {
+        ap_res = results[0].recordset;
+        donor_res= results[1].recordset;
+        res.render('adddonations', { layout: 'admin', ap_res,donor_res })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Donations Not Found"});
     })
 });
 

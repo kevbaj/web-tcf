@@ -1,0 +1,48 @@
+<h1>Add New Donation</h1>
+<form method="post" action="/donations">
+    <div class="row">
+        <div class="col">
+            <label for="aname" class="form-label">Appeal Name</label>
+            <select class="form-select" id="aname" name="aname">
+                <option selected=true disabled="disabled">Choose Appeal</option>
+                {{#each ap_res}}
+                <option value="{{appeal_id}}"> {{ap_name}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <label for="dname" class="form-label">Donor Name</label>
+            <select class="form-select" id="dname" name="dname">
+                <option selected=true disabled="disabled">Choose Donor</option>
+                {{#each donor_res}}
+                <option value="{{donor_id}}"> {{d_title}} {{d_fname}} {{d_lname}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <label for="dd" class="form-label">Date of Donation</label>
+            <input type="date" class="form-control" id="dd" name="dd">
+        </div>
+        <div class="col">
+            <label for="amt" class="form-label">Amount</label>
+            <input type="number" class="form-control" name="amt" id="amt" required>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <button type="submit" class="btn btn-success">SAVE</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" id="btnBack" name="btnBack" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.getElementById("btnBack").onclick = function () {
+        location.href = "/donations";
+    };
+</script>
