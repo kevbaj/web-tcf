@@ -1,5 +1,5 @@
 <h1>Add New Donation</h1>
-<form method="post" action="/donations">
+<form method="post" action="/savedonations">
     <div class="row">
         <div class="col">
             <label for="aname" class="form-label">Appeal Name</label>
@@ -30,6 +30,12 @@
         <div class="col">
             <label for="amt" class="form-label">Amount</label>
             <input type="number" class="form-control" name="amt" id="amt" required>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col">
+            <label for="rm" class="form-label">Remarks</label>
+            <input type="text" class="form-control" id="rm" name="rm">
         </div>
     </div>
     <div class="row mt-4">

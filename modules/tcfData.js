@@ -264,3 +264,22 @@ module.exports.SAVE_NEWSEVENTS=function(neData){
         })
     });
 }
+
+module.exports.SAVE_DONATION=function(dntData){
+    return new Promise((resolve,reject)=>{
+        const { aname, dname, dd, amt, rm} = dntData;
+        sql.connect(sqlConfig).then(pool => {
+            return pool.request()
+            .input('aname', sql.NVarChar, aname)
+            .input('dname', sql.NVarChar, dname)
+            .input('dd', sql.DateTime, dd)
+            .input('amt', sql.NVarChar, amt)
+            .input('rm', sql.NVarChar, rm)
+            .query('INSERT INTO Donation.Donations(dn_date,ap_id,dnr_id,dn_amt,dn_remarks) VALUES (@dd,@aname,@dname,@amt,@rm)')
+        }).then(() => {
+            resolve();
+        }).catch(err => {
+            reject("Unable to Add Donations");
+        })
+    });
+}

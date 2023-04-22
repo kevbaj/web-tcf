@@ -17,8 +17,15 @@
                 <th>&nbsp;</th>
             </thead>
             <tbody>
-                
-                
+                {{#each dn_res}}
+                    <td>{{dtname}}</td>
+					<td>{{ap_name}}</td>
+                    <td>{{dnr_id}}</td>
+					<td>{{dname}}</td>
+					<td>{{dn_amt}}</td>
+                    <td>{{dn_remarks}}</td>
+					<td><button class="edit-btn btn btn-secondary" data-id="{{DTN_ID}}" data-bs-toggle="modal" data-bs-target="#edit-modal">Edit</button></td>
+                {{/each}}
             </tbody>
         </table>
     </div>

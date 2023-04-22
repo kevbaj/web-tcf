@@ -518,11 +518,11 @@ app.get("/newsevents/add", authMiddleware, (req,res)=>{
 });
 
 app.get("/donations",authMiddleware,(req,res)=>{
-    const ap_query = "SELECT GETDATE()";
+    const dn_quer = "Select a.*, b.ap_name, c.d_title + ' ' + c.d_fname + ' ' + c.d_lname as dname, FORMAT(a.dn_date, 'MMM dd yyyy') as dtname from Donation.Donations a join Donation.Appeals b on b.appeal_id=a.ap_id join Donation.Donors c on c.donor_id=a.dnr_id order by a.dn_date DESC";
     let dn_res;
     tcfData.initialize().then(pool=>{
         return Promise.all([
-            pool.request().query(ap_query)
+            pool.request().query(dn_quer)
         ])
     }).then(results => {
         dn_res = results[0].recordset;
@@ -670,6 +670,15 @@ app.post("/savenewsevents",(req,res)=>{
     }).catch(err=>{
         console.error(err)
         res.status(500).render("error404",{message: "News Events Info Not Saved"});
+    });
+});
+
+app.post("/savedonations",(req,res)=>{
+    tcfData.SAVE_DONATION(req.body).then(()=>{
+        res.redirect("/donations");
+    }).catch(err=>{
+        console.error(err)
+        res.status(500).render("error404",{message: "Donation Info Not Saved"});
     });
 });
 
