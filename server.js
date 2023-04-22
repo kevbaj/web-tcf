@@ -517,6 +517,22 @@ app.get("/newsevents/add", authMiddleware, (req,res)=>{
     })
 });
 
+app.get("/donations",authMiddleware,(req,res)=>{
+    const ap_query = "SELECT GETDATE()";
+    let dn_res;
+    tcfData.initialize().then(pool=>{
+        return Promise.all([
+            pool.request().query(ap_query)
+        ])
+    }).then(results => {
+        dn_res = results[0].recordset;
+        res.render('donations', { layout: 'admin', dn_res })
+    }).catch(err => {
+        console.error(err)
+        res.status(500).render("error404",{message: "Appeals Not Found"});
+    })
+});
+
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/home');
