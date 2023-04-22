@@ -56,6 +56,7 @@ app.set("view engine", ".hbs");
 app.use(express.static("public"));
 app.use(express.urlencoded({extended:true}));
 app.use(favicon(__dirname + '/favicon.ico'));
+app.use("/images",express.static(__dirname + "/public/images"));
 
 const sessionStore = new MSSQLSessionStore({
     database: 'db_TCF',
